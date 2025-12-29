@@ -46,8 +46,8 @@ body{
   cursor:pointer;
   font-size:14px;
   transition:.3s;
-  text-decoration: none; /* for <a> tag */
-  display: inline-block; /* for <a> tag */
+  text-decoration: none;
+  display: inline-block;
 }
 
 .back-btn:hover{
@@ -67,6 +67,18 @@ body{
   max-width:760px;
   margin:30px auto;
   padding:0 16px;
+  text-align:center; /* Center all content inside */
+}
+
+/* MONTH TITLE */
+.month-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #242424;
+  padding-bottom: 6px;
+  text-align:center; /* Center the month title */
 }
 
 /* NOTIFICATION CARD */
@@ -77,6 +89,7 @@ body{
   margin-bottom:14px;
   border:1px solid #242424;
   transition:.25s;
+  text-align:center; /* Center card text */
 }
 
 .notification:hover{
@@ -97,8 +110,8 @@ body{
   font-size:15px;
   font-weight:600;
   color:#ffffff;
-  text-align:center;
   width:100%;
+  text-align:center; /* Center title */
 }
 
 /* DATE */
@@ -114,6 +127,7 @@ body{
   color:#b5b5b5;
   margin-top:8px;
   line-height:1.6;
+  text-align:center; /* Center message */
 }
 
 /* IMPORTANT */
@@ -141,10 +155,13 @@ body{
 <!-- CONTENT -->
 <div class="container">
 
+  <!-- MONTH TITLE -->
+  <div class="month-title">Last Month – December</div>
+
   <div class="notification important">
     <div class="notif-header">
       <div class="notif-title">New Package Available</div>
-      <div class="notif-time">Today · 3:20 PM</div>
+      <div class="notif-time">Dec 31 · 3:20 PM</div>
     </div>
     <div class="notif-msg">
       A new Custom Budget Package has been added. You can now choose flexible pricing based on your needs.
@@ -154,7 +171,7 @@ body{
   <div class="notification">
     <div class="notif-header">
       <div class="notif-title">Service Update</div>
-      <div class="notif-time">Yesterday · 7:45 PM</div>
+      <div class="notif-time">Dec 27 · 7:45 PM</div>
     </div>
     <div class="notif-msg">
       Performance improvements have been applied to all hosted themes for faster loading times.
@@ -164,7 +181,7 @@ body{
   <div class="notification">
     <div class="notif-header">
       <div class="notif-title">Maintenance Notice</div>
-      <div class="notif-time">Dec 27 · 11:00 PM</div>
+      <div class="notif-time">Dec 21 · 11:00 PM</div>
     </div>
     <div class="notif-msg">
       Scheduled maintenance may cause brief interruptions between 1:00 AM and 2:00 AM IST.
@@ -174,7 +191,7 @@ body{
   <div class="notification">
     <div class="notif-header">
       <div class="notif-title">Policy Update</div>
-      <div class="notif-time">Dec 26 · 4:10 PM</div>
+      <div class="notif-time">Dec 1 · 4:10 AM</div>
     </div>
     <div class="notif-msg">
       Our terms and privacy policy have been updated to improve transparency and security.
