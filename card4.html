@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -65,7 +65,7 @@
 
   /* CONTENT */
   .container {
-    max-width: 1200px;
+    max-width: 900px;
     width: 100%;
     margin-top: 100px;
     padding: 20px;
@@ -81,7 +81,7 @@
 
   .themes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
   }
 
@@ -92,8 +92,6 @@
     border: 2px solid transparent;
     transition: 0.3s ease;
     text-align: center;
-    position: relative;
-    overflow: hidden;
   }
 
   .theme-card:hover {
@@ -162,29 +160,6 @@
     box-shadow: 0 0 20px #00a2ff;
   }
 
-  /* PRICE RIBBON */
-  .price-ribbon {
-    position: absolute;
-    top: 12px;
-    right: -40px;
-    background: linear-gradient(135deg, #0084ff, #00eaff);
-    color: #fff;
-    font-weight: 700;
-    padding: 6px 60px;
-    text-align: center;
-    transform: rotate(45deg);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    font-size: 14px;
-    border-radius: 4px;
-    z-index: 2;
-    transition: 0.3s ease;
-  }
-
-  .price-ribbon:hover {
-    transform: rotate(45deg) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  }
-
   @media (max-width: 600px) {
     .navbar {
       gap: 18px;
@@ -195,11 +170,6 @@
     }
     .btn-group {
       flex-direction: column;
-    }
-    .price-ribbon {
-      padding: 6px 50px;
-      font-size: 13px;
-      right: -35px;
     }
   }
 </style>
@@ -215,64 +185,72 @@
 </nav>
 
 <div class="container">
-  <h1> ₹0 - ₹15 </h1>
+  <h1>🔥 Premium Website Themes</h1>
 
   <div class="themes">
 
     <div class="theme-card">
-      <div class="price-ribbon">₹10</div>
       <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme1.png">
       <h3>Portfolio Pro</h3>
       <p>Modern portfolio theme with smooth animations and responsive layout.</p>
       <div class="btn-group">
-        <a href="https://example.com/portfolio-preview" target="_blank" class="preview-btn">Preview</a>
-        <a href="https://example.com/portfolio-buy" target="_blank" class="buy-btn">Buy Now</a>
+        <a href="PREVIEW_LINK_1" target="_blank" class="preview-btn">Preview</a>
+        <a href="BUY_LINK_1" target="_blank" class="buy-btn">Buy Now</a>
       </div>
     </div>
 
     <div class="theme-card">
-      <div class="price-ribbon">FREE</div>
       <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme2.png">
       <h3>Business Boost</h3>
       <p>Professional business website theme with clean UI and fast performance.</p>
       <div class="btn-group">
-        <a href="https://example.com/business-preview" target="_blank" class="preview-btn">Preview</a>
-        <a href="https://example.com/business-buy" target="_blank" class="buy-btn">Buy Now</a>
+        <a href="PREVIEW_LINK_2" target="_blank" class="preview-btn">Preview</a>
+        <a href="BUY_LINK_2" target="_blank" class="buy-btn">Buy Now</a>
       </div>
     </div>
 
     <div class="theme-card">
-      <div class="price-ribbon">₹5</div>
       <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme3.png">
       <h3>Shop Smart</h3>
       <p>Dark mode e-commerce theme with glowing UI and product layout.</p>
       <div class="btn-group">
-        <a href="https://example.com/shop-preview" target="_blank" class="preview-btn">Preview</a>
-        <a href="https://example.com/shop-buy" target="_blank" class="buy-btn">Buy Now</a>
+        <a href="PREVIEW_LINK_3" target="_blank" class="preview-btn">Preview</a>
+        <a href="BUY_LINK_3" target="_blank" class="buy-btn">Buy Now</a>
       </div>
     </div>
 
-    <div class="theme-card">
-      <div class="price-ribbon">₹12</div>
-      <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme4.png">
-      <h3>Creative Blog</h3>
-      <p>Stylish blogging theme with smooth transitions and responsive design.</p>
-      <div class="btn-group">
-        <a href="https://example.com/blog-preview" target="_blank" class="preview-btn">Preview</a>
-        <a href="https://example.com/blog-buy" target="_blank" class="buy-btn">Buy Now</a>
-      </div>
-    </div>
+<div class="theme-card">
+  <div class="price-ribbon">₹8</div>
+  <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme6.png">
+  <h3>Travel Explorer</h3>
+  <p>Beautiful travel theme with destination sections and clean layout.</p>
+  <div class="btn-group">
+    <a href="https://example.com/travel-preview" target="_blank" class="preview-btn">Preview</a>
+    <a href="https://example.com/travel-buy" target="_blank" class="buy-btn">Buy Now</a>
+  </div>
+</div>
 
-    <div class="theme-card">
-      <div class="price-ribbon">₹15</div>
-      <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme5.png">
-      <h3>Startup Landing</h3>
-      <p>Perfect landing page for startups, fast, modern and mobile-friendly.</p>
-      <div class="btn-group">
-        <a href="https://example.com/startup-preview" target="_blank" class="preview-btn">Preview</a>
-        <a href="https://example.com/startup-buy" target="_blank" class="buy-btn">Buy Now</a>
-      </div>
-    </div>
+<div class="theme-card">
+  <div class="price-ribbon">₹8</div>
+  <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme6.png">
+  <h3>Travel Explorer</h3>
+  <p>Beautiful travel theme with destination sections and clean layout.</p>
+  <div class="btn-group">
+    <a href="https://example.com/travel-preview" target="_blank" class="preview-btn">Preview</a>
+    <a href="https://example.com/travel-buy" target="_blank" class="buy-btn">Buy Now</a>
+  </div>
+</div>
+
+<div class="theme-card">
+  <div class="price-ribbon">₹8</div>
+  <img src="https://raw.githubusercontent.com/USERNAME/REPO/main/images/theme6.png">
+  <h3>Travel Explorer</h3>
+  <p>Beautiful travel theme with destination sections and clean layout.</p>
+  <div class="btn-group">
+    <a href="https://example.com/travel-preview" target="_blank" class="preview-btn">Preview</a>
+    <a href="https://example.com/travel-buy" target="_blank" class="buy-btn">Buy Now</a>
+  </div>
+</div>
 
   </div>
 </div>
