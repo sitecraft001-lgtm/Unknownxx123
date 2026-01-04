@@ -3,218 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SiteCraft – Dashboard</title>
-
+<title>SiteCraft Tools Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
 
-body{
-  background:#121212;
+body {
+  font-family: "Poppins", sans-serif;
+  background:#0d0d0d;
   color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:20px;
+  margin:0;
+  padding:0;
 }
 
-.box{
-  width:100%;
-  max-width:700px;
-  background:#1e1e1e;
-  padding:25px;
-  border-radius:18px;
+/* Back Button */
+.back-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: #7b2ff7;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-h2{text-align:center;margin-bottom:20px;}
-label{color:#bbb;font-size:14px;}
-
-input,select,textarea,button{
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  border-radius:8px;
-  border:1px solid #444;
-  background:#2c2c2c;
-  color:#fff;
+.back-btn:hover {
+  background: #5f23c7;
 }
 
-textarea{resize:none;height:80px;}
+.section {
+  padding:22px;
+}
 
-button{
-  background:#4b6bfb;
-  border:none;
+h3 {
+  font-size:17px;
+  margin-bottom:12px;
   font-weight:600;
-  cursor:pointer;
-  margin-top:12px;
+  color:#bbb;
 }
-button:hover{background:#3a54d1;}
 
-.item{
-  background:#2a2a2a;
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap:15px;
+}
+
+.card {
+  background:#141414;
+  border:1px solid #2a2a2a;
+  border-radius:14px;
   padding:15px;
-  border-radius:12px;
-  margin-top:12px;
-}
-.item small{color:#aaa;display:block;margin-top:6px;}
-
-.del{
-  background:#e53935;
-}
-.del:hover{background:#c62828;}
-
-.logout{
-  background:#777;
-  margin-top:18px;
+  text-align:center;
+  transition:0.3s;
+  cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);
 }
 
-.hidden{display:none;}
+.card:hover {
+  transform:translateY(-5px);
+  border-color:#7b2ff7;
+}
+
+.icon {
+  font-size:26px;
+  background:#222;
+  padding:12px;
+  border-radius:50%;
+  display:inline-block;
+  margin-bottom:10px;
+}
+
+.tool-name {
+  font-size:15px;
+  font-weight:700;
+}
+
+.desc {
+  font-size:12px;
+  color:#888;
+  margin-top:6px;
+  line-height:1.4;
+}
+
+@media(max-width:480px){
+  .icon{ font-size:22px; padding:10px; }
+  .tool-name{ font-size:14px; }
+}
+
 </style>
 </head>
-
 <body>
 
-<div class="box">
-  <h2>Dashboard</h2>
+<!-- Back Button (opens index page) -->
+<button class="back-btn" onclick="goBack()">← Back</button>
 
-  <!-- ADMIN PANEL -->
-  <div id="adminPanel" class="hidden">
-    <label>Select User</label>
-    <select id="userSelect" onchange="loadPurchases()"></select>
+<div class="section">
+  <h3>Popular Tools</h3>
+  <div class="grid">
 
-    <input id="title" placeholder="Purchased Item Title">
-    <textarea id="desc" placeholder="Description / Access details"></textarea>
-    <button onclick="addItem()">Add Purchase</button>
+    <div class="card" onclick="openTool('image-resizer.html')">
+      <div class="icon">🖼</div>
+      <div class="tool-name">Image Resizer</div>
+      <div class="desc">Resize images to popular or custom sizes. Supports drag & drop.</div>
+    </div>
 
-    <hr style="margin:20px 0; border-color:#444;">
+    <div class="card" onclick="openTool('#')">
+      <div class="icon">⚙</div>
+      <div class="tool-name">More Soon</div>
+      <div class="desc">New tools are launching soon. Stay tuned!</div>
+    </div>
 
-    <h3>Change Admin Password</h3>
-    <input type="password" id="oldAdminPass" placeholder="Old Password">
-    <input type="password" id="newAdminPass" placeholder="New Password">
-    <button onclick="changeAdminPassword()">Change Password</button>
   </div>
+</div>
 
-  <!-- PURCHASE LIST -->
-  <div id="list"></div>
+<div class="section">
+  <h3>Custom / Future Tools</h3>
+  <div class="grid">
 
-  <button class="logout" onclick="logout()">Logout</button>
+    <div class="card" onclick="openTool('#')">
+      <div class="icon">🛒</div>
+      <div class="tool-name">Cart Manager</div>
+      <div class="desc">Upcoming tool for managing carts in theme store.</div>
+    </div>
+
+    <div class="card" onclick="openTool('#')">
+      <div class="icon">🔊</div>
+      <div class="tool-name">TTS Converter</div>
+      <div class="desc">Convert text into speech for promo scripts.</div>
+    </div>
+
+    <div class="card" onclick="openTool('#')">
+      <div class="icon">📦</div>
+      <div class="tool-name">Theme Packager</div>
+      <div class="desc">Bundle themes into downloadable ZIPs.</div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const currentUser = localStorage.getItem("currentUser");
-let role = "user";
-if(currentUser === "admin") role = "admin";
-
-if(!currentUser){
-  location.href="index.html";
+function openTool(page){
+  if(page !== "#") window.location.href = page;
 }
 
-const list = document.getElementById("list");
-const adminPanel = document.getElementById("adminPanel");
-const userSelect = document.getElementById("userSelect");
-
-let activeUser = currentUser;
-
-/* ADMIN SETUP */
-if(role === "admin"){
-  adminPanel.classList.remove("hidden");
-
-  Object.keys(localStorage)
-    .filter(k => k.startsWith("user_"))
-    .forEach(k=>{
-      const u = k.replace("user_","");
-      const opt = document.createElement("option");
-      opt.value = u;
-      opt.textContent = u;
-      userSelect.appendChild(opt);
-    });
-
-  activeUser = userSelect.value;
-}
-
-loadPurchases();
-
-/* LOAD PURCHASES */
-function loadPurchases(){
-  if(role === "admin") activeUser = userSelect.value;
-
-  list.innerHTML = "";
-  const data = JSON.parse(localStorage.getItem("purchases_"+activeUser) || "[]");
-
-  if(!data.length){
-    list.innerHTML = "<p style='color:#aaa'>No purchases found</p>";
-    return;
-  }
-
-  data.forEach((p,i)=>{
-    const div = document.createElement("div");
-    div.className="item";
-    div.innerHTML = `
-      <strong>${p.title}</strong>
-      <small>${p.desc}</small>
-      ${role==="admin"
-        ? `<button class="del" onclick="delItem(${i})">Delete</button>`
-        : ""}
-    `;
-    list.appendChild(div);
-  });
-}
-
-/* ADD PURCHASE */
-function addItem(){
-  if(!title.value || !desc.value){
-    alert("Fill all fields");
-    return;
-  }
-
-  const key = "purchases_"+activeUser;
-  const arr = JSON.parse(localStorage.getItem(key) || "[]");
-
-  arr.push({title:title.value, desc:desc.value});
-  localStorage.setItem(key, JSON.stringify(arr));
-
-  title.value="";
-  desc.value="";
-  loadPurchases();
-}
-
-/* DELETE PURCHASE */
-function delItem(i){
-  const key = "purchases_"+activeUser;
-  const arr = JSON.parse(localStorage.getItem(key));
-  arr.splice(i,1);
-  localStorage.setItem(key, JSON.stringify(arr));
-  loadPurchases();
-}
-
-/* CHANGE ADMIN PASSWORD */
-function changeAdminPassword(){
-  const oldPass = document.getElementById("oldAdminPass").value;
-  const newPass = document.getElementById("newAdminPass").value;
-  const adminPass = localStorage.getItem("admin_pass");
-
-  if(oldPass !== adminPass){
-    alert("Old password is incorrect!");
-    return;
-  }
-  if(!newPass){
-    alert("Enter a new password!");
-    return;
-  }
-
-  localStorage.setItem("admin_pass", newPass);
-  alert("Admin password changed successfully!");
-
-  document.getElementById("oldAdminPass").value = "";
-  document.getElementById("newAdminPass").value = "";
-}
-
-/* LOGOUT */
-function logout(){
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("currentRole");
-  location.href="index.html";
+function goBack(){
+  window.location.href = "index.html";
 }
 </script>
 
