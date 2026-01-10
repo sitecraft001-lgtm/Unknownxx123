@@ -63,7 +63,7 @@
   }
 
   .qr-section {
-    display: none; /* hidden initially */
+    display: none;
     margin-top: 15px;
     text-align: center;
   }
@@ -92,7 +92,7 @@
     opacity: 0.9;
   }
 
-  /* Telegram Card Styles */
+  /* Telegram Card */
   .telegram-card {
     background:#1e1e2f; 
     padding:30px; 
@@ -188,6 +188,10 @@
   <!-- TELEGRAM CARD -->
   <div class="telegram-card">
     <h2>Send Screenshot</h2>
+
+    <!-- Page name (readonly) -->
+    <input type="text" id="pageName" readonly>
+
     <input type="text" id="name" placeholder="Name" required>
     <input type="email" id="email" placeholder="Email" required>
     <input type="tel" id="phone" placeholder="Phone" required>
@@ -199,15 +203,12 @@
 </div>
 
 <script>
-  const order =
-    new URLSearchParams(window.location.search).get("order") || "Unknown Page";
-
+  const order = new URLSearchParams(window.location.search).get("order") || "Unknown Page";
   document.getElementById("orderName").innerText = order;
+  document.getElementById("pageName").value = order;
 
-  // UPI ID
-  const upiLink =
-    "upi://pay?pa=sitecraft001@oksbi&pn=SiteCraft&tn=Payment-for-" + order + "&cu=INR";
-
+  // UPI QR code
+  const upiLink = "upi://pay?pa=sitecraft001@oksbi&pn=SiteCraft&tn=Payment-for-" + order + "&cu=INR";
   const qrSection = document.getElementById("qrSection");
   const qrImg = document.getElementById("qrImg");
 
@@ -227,14 +228,16 @@
 
   // Telegram screenshot function
   async function sendToTelegram() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
+    const pageName = document.getElementById("pageName").value;
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
     const input = document.getElementById('imageInput');
     const status = document.getElementById('status');
 
+    // Check all fields
     if(!name || !email || !phone || !input.files[0]){
-        status.textContent = "Please fill all fields and select a screenshot!";
+        status.textContent = "All fields are required!";
         status.style.color = "red";
         return;
     }
@@ -243,9 +246,13 @@
     const formData = new FormData();
     formData.append("photo", file);
 
-    const caption = `📌 Screenshot Submission\nName: ${name}\nEmail: ${email}\nPhone: ${phone}`;
+    const caption = `📌 Screenshot Submission
+Page: ${pageName}
+Name: ${name}
+Email: ${email}
+Phone: ${phone}`;
 
-    // Replace with your BOT_TOKEN and CHANNEL_ID
+    // Replace with your bot token and channel
     const BOT_TOKEN = "YOUR_BOT_TOKEN";
     const CHANNEL_ID = "YOUR_CHANNEL_ID";
 
@@ -262,7 +269,6 @@
         if(result.ok){
             status.textContent = "Screenshot sent successfully!";
             status.style.color = "#4caf50";
-            // Reset form
             document.getElementById('name').value = "";
             document.getElementById('email').value = "";
             document.getElementById('phone').value = "";
