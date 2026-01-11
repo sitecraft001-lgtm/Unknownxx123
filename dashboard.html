@@ -1,10 +1,9 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/>
-<!DOCTYPE html>
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SiteCraft Tools Dashboard</title>
+<title>SiteCraft Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -14,7 +13,6 @@ body {
   color:#fff;
   margin:0;
   padding:15px;
-  text-align: center;
 }
 
 /* Back Button */
@@ -63,10 +61,7 @@ body {
   cursor:pointer;
   box-shadow:0 2px 10px rgba(0,0,0,0.5);
 }
-.card:hover, .card.hovered { 
-  transform:translateY(-4px); 
-  border-color:#7b2ff7; 
-}
+.card:hover { transform:translateY(-4px); border-color:#7b2ff7; }
 
 /* Left Image Area */
 .card img {
@@ -87,25 +82,17 @@ body {
 .tool-name {
   font-size:16px;
   font-weight:700;
-  text-align: center;
 }
 .desc {
   font-size:12px;
   color:#888;
   margin-top:4px;
   line-height:1.4;
-  text-align: center;
 }
 
 @media(max-width:480px){
   .card img{ width:70px; height:70px; }
   .page-heading{ font-size:20px; }
-}
-
-footer {
-  color: #888;
-  font-size:12px;
-  margin-top:20px;
 }
 
 </style>
@@ -121,16 +108,16 @@ footer {
 <div class="grid">
 
   <!-- Image Resizer Tool Card -->
-  <div class="card" onclick="openTool('resizer.html', event)">
+  <div class="card" onclick="openTool('image-resizer.html')">
     <img src="img_tool_resizer.png" alt="Image Resizer">
     <div class="card-content">
-      <div class="tool-name">YT Thumbnail Resizer</div>
-      <div class="desc">Quickly resize any image to 1280×720 (16:9)Supports drag & drop.</div>
+      <div class="tool-name">Image Resizer</div>
+      <div class="desc">Resize images to popular or custom sizes. Supports drag & drop.</div>
     </div>
   </div>
-
+<br>
   <!-- TTS Tool Card -->
-  <div class="card" onclick="openTool('#', event)">
+  <div class="card" onclick="openTool('#')">
     <img src="img_tool_tts.png" alt="TTS Tool">
     <div class="card-content">
       <div class="tool-name">TTS Converter</div>
@@ -139,7 +126,7 @@ footer {
   </div>
 
   <!-- Theme Packager Tool Card -->
-  <div class="card" onclick="openTool('#', event)">
+  <div class="card" onclick="openTool('#')">
     <img src="img_tool_zip.png" alt="Theme Packager">
     <div class="card-content">
       <div class="tool-name">Theme Packager</div>
@@ -150,37 +137,13 @@ footer {
 </div>
 
 <script>
-let lastTap = 0;
-
-function openTool(page, event){
-  const now = Date.now();
-  const DOUBLE_TAP_DELAY = 300; // milliseconds
-
-  if(page === "#") return; // placeholder, do nothing
-
-  if(now - lastTap < DOUBLE_TAP_DELAY){
-    // double tap detected → open the page
-    window.location.href = page;
-  } else {
-    // single tap → show hover effect briefly
-    event.currentTarget.classList.add('hovered');
-    setTimeout(() => {
-      event.currentTarget.classList.remove('hovered');
-    }, 500);
-  }
-
-  lastTap = now;
+function openTool(page){
+  if(page !== "#") window.location.href = page;
 }
-
 function goBack(){
   window.location.href = "index.html";
 }
 </script>
 
-<footer>
-<marquee behavior="scroll" direction="left">
-© 2026 SiteCraft.top – All rights reserved
-</marquee>
-</footer>
 </body>
 </html>
