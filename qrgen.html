@@ -1,0 +1,218 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Dark QR Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Poppins,sans-serif}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#050816;
+}
+
+.container{
+  background:#0b1220;
+  width:400px;
+  padding:24px;
+  border-radius:24px;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+  color:#fff;
+}
+
+h2{margin-bottom:12px}
+
+input,select{
+  width:100%;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid #1e293b;
+  margin-bottom:10px;
+  background:#020617;
+  color:#fff;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#38bdf8,#6366f1);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Logo */
+.logo-preview{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  overflow:hidden;
+  margin:12px auto;
+  display:none;
+  border:3px solid #38bdf8;
+}
+.logo-preview img{width:100%;height:100%;object-fit:cover}
+
+/* Animated Gradient Border */
+.qr-border{
+  margin-top:18px;
+  padding:3px;
+  border-radius:26px;
+  background:linear-gradient(
+    270deg,
+    #38bdf8,
+    #a855f7,
+    #22c55e,
+    #ec4899,
+    #f97316
+  );
+  background-size:600% 600%;
+  animation:borderMove 8s ease infinite;
+}
+
+@keyframes borderMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.qr-card{
+  background:#020617;
+  padding:22px;
+  border-radius:23px;
+  transition:.4s ease;
+}
+
+.qr-border:hover{
+  filter:drop-shadow(0 0 30px rgba(56,189,248,.7));
+  transform:translateY(-6px);
+}
+
+#qrBox canvas{
+  background:#fff;
+  padding:14px;
+  border-radius:18px;
+}
+
+/* Glow on hover */
+.qr-border:hover canvas{
+  box-shadow:0 0 25px rgba(168,85,247,.8);
+}
+
+.download{
+  margin-top:12px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Premium QR Generator</h2>
+
+  <input type="text" id="qrText" placeholder="Enter text or link">
+
+  <select id="qrTheme">
+    <option value="#38bdf8">Neon Blue</option>
+    <option value="#a855f7">Neon Purple</option>
+    <option value="#22c55e">Neon Green</option>
+    <option value="#ec4899">Neon Pink</option>
+    <option value="#f97316">Neon Orange</option>
+  </select>
+
+  <input type="file" id="logoInput" accept="image/*" onchange="previewLogo()">
+
+  <div class="logo-preview" id="logoPreview">
+    <img id="logoImg">
+  </div>
+
+  <button onclick="generateQR()">Generate</button>
+
+  <!-- Animated Border QR -->
+  <div class="qr-border" id="qrBorder">
+    <div class="qr-card">
+      <div id="qrBox"></div>
+    </div>
+  </div>
+
+  <button class="download" id="downloadBtn" onclick="downloadQR()">Download</button>
+</div>
+
+<script>
+function previewLogo(){
+  const f = logoInput.files[0];
+  if(!f) return;
+  logoImg.src = URL.createObjectURL(f);
+  logoPreview.style.display="block";
+}
+
+function generateQR(){
+  const text = qrText.value.trim();
+  if(!text){alert("Enter text or link");return;}
+
+  const color = qrTheme.value;
+  qrBox.innerHTML="";
+
+  new QRCode(qrBox,{
+    text:text,
+    width:220,
+    height:220,
+    colorDark:color,
+    colorLight:"#ffffff",
+    correctLevel:QRCode.CorrectLevel.H
+  });
+
+  downloadBtn.style.display="block";
+}
+
+function downloadQR(){
+  const qrCanvas = document.querySelector("#qrBox canvas");
+  const logoVisible = logoPreview.style.display==="block";
+
+  const final = document.createElement("canvas");
+  const ctx = final.getContext("2d");
+
+  const logoSize = logoVisible ? 80 : 0;
+
+  final.width = qrCanvas.width + 60;
+  final.height = qrCanvas.height + logoSize + 60;
+
+  ctx.fillStyle="#020617";
+  ctx.fillRect(0,0,final.width,final.height);
+
+  let y = 30;
+
+  if(logoVisible){
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(final.width/2,y+logoSize/2,logoSize/2,0,Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(logoImg,final.width/2-logoSize/2,y,logoSize,logoSize);
+    ctx.restore();
+    y += logoSize + 15;
+  }
+
+  ctx.drawImage(qrCanvas,(final.width-qrCanvas.width)/2,y);
+
+  const a = document.createElement("a");
+  a.download="SiteCraft-QR-Generator.png";
+  a.href=final.toDataURL();
+  a.click();
+}
+</script>
+
+</body>
+</html>
