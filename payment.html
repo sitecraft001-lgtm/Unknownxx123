@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment</title>
+<title>Payment-SiteCraft.top</title>
 
 <style>
   body {
@@ -19,10 +19,10 @@
   }
 
   .box {
-    max-width: 420px;
+    max-width: 450px;
     width: 100%;
     background: rgba(0,0,0,0.45);
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 30px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     text-align: center;
@@ -90,6 +90,7 @@
     line-height: 1.5;
     text-align: left;
     opacity: 0.9;
+    text-align: center;
   }
 
   /* Telegram Card */
@@ -117,7 +118,8 @@
   }
 
   .telegram-card input, .telegram-card button { 
-    width:100%; 
+    text-align: center;
+    width:90%; 
     padding:12px; 
     margin:8px 0; 
     border-radius:8px; 
@@ -129,6 +131,7 @@
   }
 
   .telegram-card input:focus {
+    text-align: center;
     border-color:#4facfe;
     outline:none;
     box-shadow:0 0 10px rgba(79,172,254,0.4);
@@ -169,12 +172,13 @@
     <h3>Pay via UPI</h3>
     <div class="instructions">
       <strong>How to pay:</strong>
-      <ol>
+      <ul>
         <li>Click "Pay Now" to view QR code.</li>
         <li>Scan the QR using Google Pay / PhonePe / Paytm / BHIM.</li>
         <li>Enter the amount and confirm the payment.</li>
-        <li>After payment, send a screenshot to our Telegram for confirmation.</li>
-      </ol>
+        <li>After payment, send a screenshot in this page for confirmation.</li>
+        <li>Once the screenshot is submitted, your payment will be verified within 12 hours and the ZIP file will be sent to your contact.</li>
+      </ul>
     </div>
 
     <div class="btn" onclick="showQR()">Pay Now</div>
@@ -187,7 +191,8 @@
 
   <!-- TELEGRAM CARD -->
   <div class="telegram-card">
-    <h2>Send Screenshot</h2>
+    <h2>Send Ur Screenshot Here</h2>
+    <h4>⚠️ Please ensure all entered information is correct, as the ZIP file will be delivered to these contact details.</h4>
 
     <!-- Page name (readonly) -->
     <input type="text" id="pageName" readonly>
