@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Choose Themes – SiteCraft.top</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -14,43 +15,74 @@
   font-family: 'Poppins', sans-serif;
 }
 
+/* BODY + BACKGROUND */
 body {
-  background: #121212;
+  background: url("123456.jpg");
+  background-size: 110%;
+  background-position: center;
+  animation: bgMove 20s ease-in-out infinite alternate;
   color: #e0e0e0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND MOTION */
+@keyframes bgMove {
+  0% { background-position: center top; }
+  100% { background-position: center bottom; }
+}
+
+/* DARK OVERLAY */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9));
+  z-index: -2;
+}
+
+/* FLOATING PARTICLES */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(#00eaff 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.08;
+  animation: particles 30s linear infinite;
+  z-index: -1;
+}
+
+@keyframes particles {
+  from { transform: translateY(0); }
+  to { transform: translateY(-200px); }
 }
 
 /* NAVBAR */
 .navbar {
   width: 100%;
-  background: #1a1a1a;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
   padding: 14px 0;
   position: fixed;
   top: 0;
-  left: 0;
   display: flex;
   justify-content: center;
   gap: 40px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   z-index: 1000;
 }
 
 .navbar a {
   text-decoration: none;
-  font-size: 16px;
+  color: #fff;
   font-weight: 600;
-  color: #ffffff;
-  transition: 0.3s ease;
   position: relative;
+  transition: 0.3s;
 }
 
 .navbar a:hover {
   color: #00eaff;
-  text-shadow: 0 0 8px #00eaff, 0 0 16px #00b3ff, 0 0 24px #0066ff;
-  transform: scale(1.1);
+  text-shadow: 0 0 8px #00eaff;
 }
 
 .navbar a::after {
@@ -60,96 +92,105 @@ body {
   height: 2px;
   background: #00eaff;
   left: 0;
-  bottom: -5px;
-  transition: 0.3s ease;
+  bottom: -6px;
+  transition: 0.3s;
 }
 
 .navbar a:hover::after {
   width: 100%;
 }
 
-/* PAGE CONTENT */
+/* MAIN CONTAINER */
 .container {
-  max-width: 900px;
-  width: 100%;
-  margin-top: 100px;
+  max-width: 1000px;
+  margin: 110px auto 40px;
   padding: 20px;
+  animation: fadeUp 1s ease forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 h1 {
   text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: #ffffff;
+  margin-bottom: 30px;
+  font-size: 32px;
+  color: #fff;
 }
 
+/* THEME GRID */
 .themes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
+/* THEME CARDS */
 .theme-card {
-  background: #1e1e1e;
-  padding: 18px;
-  border-radius: 16px;
-  border: 2px solid transparent;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   text-align: center;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%);
+}
+
+.theme-card:hover::before {
+  transform: translateX(100%);
+  transition: 0.7s;
 }
 
 .theme-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.04);
 }
 
-.blue:hover {
-  border-color: #2563eb;
-  box-shadow: 0 12px 24px rgba(37,99,235,0.6), 0 0 18px rgba(37,99,235,0.4);
-}
-
-.purple:hover {
-  border-color: #9333ea;
-  box-shadow: 0 12px 24px rgba(147,51,234,0.6), 0 0 18px rgba(147,51,234,0.4);
-}
-
-.green:hover {
-  border-color: #22c55e;
-  box-shadow: 0 12px 24px rgba(34,197,94,0.6), 0 0 18px rgba(34,197,94,0.4);
-}
-
-.orange:hover {
-  border-color: #f97316;
-  box-shadow: 0 12px 24px rgba(249,115,22,0.6), 0 0 18px rgba(249,115,22,0.4);
-}
-
-.red:hover {
-  border-color: #ef4444;
-  box-shadow: 0 12px 24px rgba(239,68,68,0.6), 0 0 18px rgba(239,68,68,0.4);
-}
+/* COLOR GLOWS */
+.blue:hover   { box-shadow: 0 0 25px rgba(37,99,235,0.7); }
+.purple:hover { box-shadow: 0 0 25px rgba(147,51,234,0.7); }
+.green:hover  { box-shadow: 0 0 25px rgba(34,197,94,0.7); }
+.orange:hover { box-shadow: 0 0 25px rgba(249,115,22,0.7); }
+.red:hover    { box-shadow: 0 0 25px rgba(239,68,68,0.7); }
 
 .theme-card h3 {
   font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #ffffff;
+  margin-bottom: 10px;
+  color: #fff;
 }
 
 .theme-card p {
   font-size: 14px;
-  color: #aaaaaa;
+  color: #cfcfcf;
 }
 
+/* FOOTER */
+footer {
+  margin: 40px 0 20px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* MOBILE */
 @media (max-width: 600px) {
   .navbar {
     gap: 18px;
     flex-wrap: wrap;
-    padding: 12px 10px;
   }
-
-  .navbar a {
-    font-size: 14px;
+  h1 {
+    font-size: 26px;
   }
 }
 </style>
@@ -192,24 +233,45 @@ h1 {
       <p>Individually designed pages customized to your website needs</p>
     </div>
 
-    <!-- NEW CARD -->
     <div class="theme-card blue" ondblclick="openTheme('card6.html')">
       <h3>Theme Categories</h3>
       <p>Website themes designed for every niche</p>
     </div>
-
   </div>
 </div>
+
+<footer>
+ <center>© 2026 SiteCraft.top – All rights reserved</center>
+</footer>
 
 <script>
 function openTheme(url) {
   window.open(url, "_blank");
 }
+
+/* RIPPLE EFFECT */
+document.querySelectorAll(".theme-card").forEach(card => {
+  card.addEventListener("click", e => {
+    const ripple = document.createElement("span");
+    ripple.style.position = "absolute";
+    ripple.style.width = ripple.style.height = "120px";
+    ripple.style.background = "rgba(255,255,255,0.35)";
+    ripple.style.borderRadius = "50%";
+    ripple.style.left = e.offsetX - 60 + "px";
+    ripple.style.top = e.offsetY - 60 + "px";
+    ripple.style.animation = "ripple 0.6s linear";
+    card.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+});
 </script>
-<br>
-<footer>
-  © 2026 SiteCraft.top – All rights reserved
-</footer>
+
+<style>
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.6; }
+  to { transform: scale(2.5); opacity: 0; }
+}
+</style>
 
 </body>
 </html>
