@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -92,23 +92,12 @@ button{
   background:#020617;
   padding:22px;
   border-radius:23px;
-  transition:.4s ease;
-}
-
-.qr-border:hover{
-  filter:drop-shadow(0 0 30px rgba(56,189,248,.7));
-  transform:translateY(-6px);
 }
 
 #qrBox canvas{
   background:#fff;
   padding:14px;
   border-radius:18px;
-}
-
-/* Glow on hover */
-.qr-border:hover canvas{
-  box-shadow:0 0 25px rgba(168,85,247,.8);
 }
 
 .download{
@@ -141,8 +130,7 @@ button{
 
   <button onclick="generateQR()">Generate</button>
 
-  <!-- Animated Border QR -->
-  <div class="qr-border" id="qrBorder">
+  <div class="qr-border">
     <div class="qr-card">
       <div id="qrBox"></div>
     </div>
@@ -152,6 +140,11 @@ button{
 </div>
 
 <script>
+/* 🔐 Persistent QR Download Counter */
+let qrDownloadCount = localStorage.getItem("sitecraftQRCount")
+  ? parseInt(localStorage.getItem("sitecraftQRCount"))
+  : 0;
+
 function previewLogo(){
   const f = logoInput.files[0];
   if(!f) return;
@@ -161,16 +154,15 @@ function previewLogo(){
 
 function generateQR(){
   const text = qrText.value.trim();
-  if(!text){alert("Enter text or link");return;}
+  if(!text){ alert("Enter text or link"); return; }
 
-  const color = qrTheme.value;
   qrBox.innerHTML="";
 
   new QRCode(qrBox,{
     text:text,
     width:220,
     height:220,
-    colorDark:color,
+    colorDark:qrTheme.value,
     colorLight:"#ffffff",
     correctLevel:QRCode.CorrectLevel.H
   });
@@ -207,9 +199,13 @@ function downloadQR(){
 
   ctx.drawImage(qrCanvas,(final.width-qrCanvas.width)/2,y);
 
+  /* 📂 Auto Filename */
+  qrDownloadCount++;
+  localStorage.setItem("sitecraftQRCount", qrDownloadCount);
+
   const a = document.createElement("a");
-  a.download="SiteCraft-QR-Generator.png";
-  a.href=final.toDataURL();
+  a.download = `SiteCraft-QR-${qrDownloadCount}.png`;
+  a.href = final.toDataURL("image/png",1.0);
   a.click();
 }
 </script>
