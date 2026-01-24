@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ZingBook — Python Snippets</title>
+
+<!-- ================== STYLE (INLINE) ================== -->
+<style>
+:root {
+  --bg: #0b0f1a;
+  --panel: #12182a;
+  --muted: #9aa3b2;
+  --text: #e6ebf5;
+  --border: #1f2a44;
+  --tag: #1b2236;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --radius: 14px;
+  --max-width: 1200px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; gap: 10px; align-items: center; }
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.codes {
+  max-width: var(--max-width);
+  margin: auto;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.muted { color: var(--muted); }
+
+.filters {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.filters input {
+  max-width: 520px;
+  width: 100%;
+  padding: 12px;
+  background: #0e1426;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.snippet-list {
+  display: grid;
+  gap: 24px;
+  justify-items: center;
+  margin-top: 30px;
+}
+
+.snippet {
+  width: 100%;
+  max-width: 900px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.snippet-header {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn {
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.code-block {
+  padding: 16px;
+  background: #0e1426;
+  overflow-x: auto;
+  text-align: left;
+}
+
+.code-block code {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.snippet-meta {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+.tag {
+  background: var(--tag);
+  color: var(--muted);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.site-footer {
+  margin-top: 40px;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+</style>
+
+<!-- SNIPPETS FILE -->
+<script src="snippets.js"></script>
+</head>
+
+<body>
+<header class="site-header">
+  <div class="brand">
+    <span>🐍</span>
+    <h1>ZingBook</h1>
+  </div>
+  <nav class="nav">
+    <a href="#">Home</a>
+  </nav>
+</header>
+
+<main class="codes">
+  <h2>Python Snippets</h2>
+  <p class="muted">All snippets load from one file</p>
+
+  <div class="filters">
+    <input id="search" type="search" placeholder="Search snippets" />
+  </div>
+
+  <section id="snippetList" class="snippet-list"></section>
+</main>
+
+<footer class="site-footer">
+  © 2026 ZingBook
+</footer>
+
+<!-- ================== SCRIPT (INLINE) ================== -->
+<script>
+// Render snippets
+const list = document.getElementById("snippetList");
+
+SNIPPETS.forEach(s => {
+  const el = document.createElement("article");
+  el.className = "snippet";
+  el.dataset.tags = s.tags.join(" ");
+
+  el.innerHTML = `
+    <header class="snippet-header">
+      <h3>${s.title}</h3>
+      <button class="btn copy-btn" data-id="${s.id}">Copy</button>
+    </header>
+
+    <pre class="code-block"><code id="${s.id}">${s.code}</code></pre>
+
+    <footer class="snippet-meta">
+      ${s.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+    </footer>
+  `;
+
+  list.appendChild(el);
+});
+
+// Copy
+document.addEventListener("click", async e => {
+  const btn = e.target.closest(".copy-btn");
+  if (!btn) return;
+
+  const code = document.getElementById(btn.dataset.id);
+  await navigator.clipboard.writeText(code.textContent);
+  btn.textContent = "Copied!";
+  setTimeout(() => btn.textContent = "Copy", 1200);
+});
+
+// Search
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll(".snippet").forEach(s => {
+    s.style.display =
+      s.querySelector("h3").textContent.toLowerCase().includes(q) ||
+      s.dataset.tags.includes(q)
+        ? ""
+        : "none";
+  });
+});
+</script>
+
+</body>
+</html>
