@@ -94,6 +94,24 @@ body {
   border-radius: 16px;
 }
 
+/* SEARCH INSTRUCTIONS */
+.search-instructions {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.search-instructions p {
+  background: rgba(255,255,255,0.05);
+  padding: 8px 14px;
+  border-radius: 12px;
+}
+
 /* GRID */
 .snippet-list {
   display: grid;
@@ -197,6 +215,10 @@ body {
 
   <div class="search-box">
     <input id="search" type="search" placeholder="Search Your snippets…" />
+  </div>
+
+  <div class="search-instructions">
+    <p>💡 How to search your YouTube source code: Type any keyword from your snippet title, code, or tags above.</p>
   </div>
 
   <section id="snippetList" class="snippet-list"></section>
