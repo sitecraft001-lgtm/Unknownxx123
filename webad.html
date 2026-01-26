@@ -5,114 +5,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ad</title>
 
-<!-- IMMEDIATE IMAGE LOAD -->
+<!-- FAST IMAGE LOAD -->
 <link rel="preconnect" href="https://raw.githubusercontent.com">
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-<link rel="preload"
-      as="image"
-      href="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png"
-      fetchpriority="high">
+<link rel="preload" as="image"
+href="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png"
+fetchpriority="high">
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
-
-body {
-  background: #000;
-  overflow: hidden;
-  cursor: pointer;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#000;overflow:hidden;font-family:system-ui}
 
 /* FADE */
-.fade {
-  position: fixed;
-  inset: 0;
-  transition: opacity .35s ease;
-}
-.fade.out {
-  opacity: 0;
-}
+.fade{position:fixed;inset:0;transition:opacity .35s ease}
+.fade.out{opacity:0}
 
 /* IMAGE */
-.image-wrap {
-  position: fixed;
-  inset: 0;
-}
-.image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.image-wrap{position:fixed;inset:0}
+.image-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block
 }
 
 /* UI */
-.ui {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
+.ui{position:fixed;inset:0}
 
 /* TIMER */
-.timer {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 52px;
-  height: 52px;
+.timer{
+  position:absolute;
+  bottom:16px;
+  right:16px;
+  width:52px;
+  height:52px
+}
+.timer svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg)
+}
+.timer circle{
+  fill:none;
+  stroke-width:4
+}
+.track{stroke:rgba(255,255,255,.3)}
+.progress{
+  stroke:#22c55e;
+  stroke-dasharray:157;
+  stroke-dashoffset:157;
+  transition:stroke-dashoffset 3s linear
+}
+.count{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:14px;
+  font-weight:600
 }
 
-.timer svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
+/* SKIP AD */
+.skip{
+  position:absolute;
+  top:14px;
+  right:14px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.35);
+  color:#fff;
+  display:none;
+  gap:6px;
+  align-items:center;
+  cursor:pointer;
 }
-
-.timer circle {
-  fill: none;
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.track { stroke: rgba(255,255,255,.3); }
-.progress {
-  stroke: #22c55e;
-  stroke-dasharray: 157;
-  stroke-dashoffset: 157;
-  transition: stroke-dashoffset 3s linear;
-}
-
-.count {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* SKIP */
-.skip {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(0,0,0,.65);
-  border: 1px solid rgba(255,255,255,.35);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-.skip svg {
-  width: 15px;
-  height: 15px;
-  stroke: #fff;
-  stroke-width: 2.5;
+.skip svg{
+  width:14px;
+  height:14px;
+  stroke:#fff;
+  stroke-width:2.5
 }
 </style>
 </head>
@@ -121,22 +95,19 @@ body {
 
 <div class="fade" id="fade">
 
-  <!-- IMAGE LOADS IMMEDIATELY -->
-  <div class="image-wrap" id="imageScreen">
-    <img
-      src="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png"
-      alt="Dashimage 61"
-      decoding="async"
-      fetchpriority="high"
-    >
+  <!-- IMAGE -->
+  <div class="image-wrap">
+    <img src="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png" alt="Ad">
   </div>
 
   <div class="ui">
-    <!-- SKIP -->
-    <div class="skip" id="skipBtn" aria-label="Skip">
+
+    <!-- SKIP AD -->
+    <div class="skip" id="skipBtn">
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M6 6l12 12M18 6L6 18"/>
       </svg>
+      Skip Ad
     </div>
 
     <!-- TIMER -->
@@ -147,8 +118,8 @@ body {
       </svg>
       <div class="count" id="count">3</div>
     </div>
-  </div>
 
+  </div>
 </div>
 
 <script>
@@ -158,39 +129,38 @@ const fade = document.getElementById("fade");
 const progress = document.querySelector(".progress");
 const skip = document.getElementById("skipBtn");
 const countEl = document.getElementById("count");
-const imageScreen = document.getElementById("imageScreen");
 
 let time = 3;
 let locked = true;
 
-/* Start ring immediately */
-requestAnimationFrame(() => {
-  progress.style.strokeDashoffset = "0";
+// Start progress ring
+requestAnimationFrame(()=>{
+  progress.style.strokeDashoffset="0";
 });
 
-/* Countdown */
-const timer = setInterval(() => {
+// Countdown
+const timer = setInterval(()=>{
   time--;
   countEl.textContent = time;
 
-  if (time <= 0) {
+  if(time <= 0){
     clearInterval(timer);
     skip.style.display = "flex";
     locked = false;
   }
-}, 1000);
+},1000);
 
-/* Redirect */
-function go() {
-  if (locked) return;
+// Redirect
+function go(){
+  if(locked) return;
   fade.classList.add("out");
-  setTimeout(() => {
+  setTimeout(()=>{
     window.location.href = REDIRECT_URL;
-  }, 300);
+  },300);
 }
 
 skip.onclick = go;
-imageScreen.onclick = go;
+document.querySelector(".image-wrap").onclick = go;
 </script>
 
 </body>
