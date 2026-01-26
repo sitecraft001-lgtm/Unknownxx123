@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ad</title>
 
-<link rel="preload" as="image" href="https://github.com/sitecraft001-lgtm/dashimage/blob/main/61.png?raw=true">
+<!-- IMMEDIATE IMAGE LOAD -->
+<link rel="preconnect" href="https://raw.githubusercontent.com">
+<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+<link rel="preload"
+      as="image"
+      href="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png"
+      fetchpriority="high">
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,14 +27,13 @@ body {
 .fade {
   position: fixed;
   inset: 0;
-  transition: opacity .35s ease, transform .35s ease;
+  transition: opacity .35s ease;
 }
 .fade.out {
   opacity: 0;
-  transform: scale(1.02);
 }
 
-/* FULL CLEAR IMAGE */
+/* IMAGE */
 .image-wrap {
   position: fixed;
   inset: 0;
@@ -37,7 +42,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  image-rendering: auto;
+  display: block;
 }
 
 /* UI */
@@ -50,10 +55,10 @@ body {
 /* TIMER */
 .timer {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 56px;
-  height: 56px;
+  bottom: 16px;
+  right: 16px;
+  width: 52px;
+  height: 52px;
 }
 
 .timer svg {
@@ -68,10 +73,7 @@ body {
   stroke-linecap: round;
 }
 
-.track {
-  stroke: rgba(255,255,255,.25);
-}
-
+.track { stroke: rgba(255,255,255,.3); }
 .progress {
   stroke: #22c55e;
   stroke-dasharray: 157;
@@ -84,21 +86,21 @@ body {
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 16px;
-  font-weight: 600;
   color: #fff;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 /* SKIP */
 .skip {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 38px;
-  height: 38px;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(0,0,0,.6);
-  border: 1px solid rgba(255,255,255,.3);
+  background: rgba(0,0,0,.65);
+  border: 1px solid rgba(255,255,255,.35);
   display: none;
   align-items: center;
   justify-content: center;
@@ -107,9 +109,9 @@ body {
 }
 
 .skip svg {
-  width: 16px;
-  height: 16px;
-  stroke: white;
+  width: 15px;
+  height: 15px;
+  stroke: #fff;
   stroke-width: 2.5;
 }
 </style>
@@ -119,9 +121,14 @@ body {
 
 <div class="fade" id="fade">
 
-  <!-- CLEAR IMAGE -->
+  <!-- IMAGE LOADS IMMEDIATELY -->
   <div class="image-wrap" id="imageScreen">
-    <img src="https://github.com/sitecraft001-lgtm/dashimage/blob/main/61.png?raw=true" alt="Dashimage 61">
+    <img
+      src="https://raw.githubusercontent.com/sitecraft001-lgtm/dashimage/main/61.png"
+      alt="Dashimage 61"
+      decoding="async"
+      fetchpriority="high"
+    >
   </div>
 
   <div class="ui">
@@ -145,7 +152,7 @@ body {
 </div>
 
 <script>
-const REDIRECT_URL = "zingbook.html";
+const REDIRECT_URL = "https://sitecraft.top";
 
 const fade = document.getElementById("fade");
 const progress = document.querySelector(".progress");
@@ -156,7 +163,7 @@ const imageScreen = document.getElementById("imageScreen");
 let time = 3;
 let locked = true;
 
-/* Start ring */
+/* Start ring immediately */
 requestAnimationFrame(() => {
   progress.style.strokeDashoffset = "0";
 });
@@ -179,7 +186,7 @@ function go() {
   fade.classList.add("out");
   setTimeout(() => {
     window.location.href = REDIRECT_URL;
-  }, 350);
+  }, 300);
 }
 
 skip.onclick = go;
