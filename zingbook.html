@@ -108,11 +108,15 @@ body {
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
 }
 
+/* COOL HOVER EFFECT */
 .snippet:hover {
-  transform: translateY(-10px);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 35px 70px rgba(0,0,0,0.8);
+  filter: brightness(1.05);
 }
 
 /* HEADER */
@@ -139,6 +143,7 @@ body {
   padding: 18px;
   font-size: 14px;
   overflow-x: auto;
+  user-select: none; /* PREVENT SELECTION BY DEFAULT */
 }
 
 .code-block code {
@@ -161,21 +166,6 @@ body {
   font-size: 12px;
   color: var(--muted);
   background: rgba(255,255,255,0.06);
-}
-
-/* SHOW MORE */
-.show-more {
-  margin-top: 42px;
-  display: flex;
-  justify-content: center;
-}
-
-.show-more button {
-  padding: 12px 28px;
-  border-radius: 16px;
-  background: #0f1430;
-  border: 1px solid var(--border);
-  color: var(--text);
 }
 
 /* FOOTER */
@@ -210,10 +200,6 @@ body {
   </div>
 
   <section id="snippetList" class="snippet-list"></section>
-
-  <div class="show-more">
-    <button id="showMoreBtn">Show More</button>
-  </div>
 </main>
 
 <footer class="site-footer">
@@ -224,15 +210,12 @@ body {
 /* ===== SNIPPET LOGIC ===== */
 const list = document.getElementById("snippetList");
 const search = document.getElementById("search");
-const showMoreBtn = document.getElementById("showMoreBtn");
 
-let visible = 5;
-const STEP = 5;
 let filtered = [];
 
 function render() {
   list.innerHTML = "";
-  filtered.slice(0, visible).forEach(s => {
+  filtered.forEach(s => {
     const el = document.createElement("article");
     el.className = "snippet";
     el.innerHTML = `
@@ -247,12 +230,10 @@ function render() {
     `;
     list.appendChild(el);
   });
-  showMoreBtn.style.display = visible < filtered.length ? "inline-block" : "none";
 }
 
 function filter() {
   const q = search.value.toLowerCase();
-  visible = STEP;
   filtered = SNIPPETS.filter(s =>
     (s.title + s.code + s.tags.join(" ")).toLowerCase().includes(q)
   );
@@ -260,16 +241,16 @@ function filter() {
 }
 
 search.addEventListener("input", filter);
-showMoreBtn.addEventListener("click", () => {
-  visible += STEP;
-  render();
-});
 
 document.addEventListener("click", async e => {
   const btn = e.target.closest(".copy-btn");
   if (!btn) return;
   const code = document.getElementById(btn.dataset.id);
+  
+  // ENABLE SELECTION AND COPY
+  code.style.userSelect = "text";
   await navigator.clipboard.writeText(code.textContent);
+  
   btn.textContent = "Copied ✓";
   setTimeout(() => btn.textContent = "Copy", 1200);
 });
@@ -277,23 +258,7 @@ document.addEventListener("click", async e => {
 filtered = [...SNIPPETS];
 render();
 
-/* ===== AUTO AD REDIRECT (2 MIN, REPEATING) ===== */
-const AD_URL = "webad.html"; // your ad page
-const AD_DELAY = 2 * 60 * 1000; // 2 minutes
-let adTimer;
-
-function resetAdTimer() {
-  clearTimeout(adTimer);
-  adTimer = setTimeout(() => {
-    window.location.href = AD_URL;
-  }, AD_DELAY);
-}
-
-["mousemove", "keydown", "scroll", "click"].forEach(event =>
-  document.addEventListener(event, resetAdTimer)
-);
-
-resetAdTimer();
+/* ===== AUTO REDIRECT REMOVED ===== */
 </script>
 
 <script src="snippets.js"></script>
