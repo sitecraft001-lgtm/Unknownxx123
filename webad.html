@@ -5,129 +5,113 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ad</title>
 
-<link rel="preload" as="image" href="ad.jpg">
+<link rel="preload" as="image" href="https://github.com/sitecraft001-lgtm/dashimage/blob/main/61.png?raw=true">
 
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 
-  body {
-    background: #020617;
-    overflow: hidden;
-    cursor: pointer;
-  }
+body {
+  background: #000;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-  /* FADE WRAPPER */
-  .fade {
-    position: fixed;
-    inset: 0;
-    transition: opacity .35s ease, transform .35s ease;
-  }
+/* FADE */
+.fade {
+  position: fixed;
+  inset: 0;
+  transition: opacity .35s ease, transform .35s ease;
+}
+.fade.out {
+  opacity: 0;
+  transform: scale(1.02);
+}
 
-  .fade.out {
-    opacity: 0;
-    transform: scale(1.03);
-  }
+/* FULL CLEAR IMAGE */
+.image-wrap {
+  position: fixed;
+  inset: 0;
+}
+.image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: auto;
+}
 
-  /* FULL IMAGE */
-  .bg {
-    position: fixed;
-    inset: 0;
-    background: url("ad.jpg") center / cover no-repeat;
-    transform: scale(1.02);
-  }
+/* UI */
+.ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
 
-  /* NEON GLASS OVERLAY */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(99,102,241,.35), transparent 40%),
-      radial-gradient(circle at 80% 90%, rgba(34,197,94,.35), transparent 45%),
-      rgba(2,6,23,.55);
-    backdrop-filter: blur(6px);
-  }
+/* TIMER */
+.timer {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+}
 
-  /* UI */
-  .ui {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-  }
+.timer svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
 
-  /* TIMER RING */
-  .timer {
-    position: absolute;
-    bottom: 28px;
-    right: 28px;
-    width: 64px;
-    height: 64px;
-  }
+.timer circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
 
-  .timer svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-  }
+.track {
+  stroke: rgba(255,255,255,.25);
+}
 
-  .timer circle {
-    fill: none;
-    stroke-width: 4;
-    stroke-linecap: round;
-  }
+.progress {
+  stroke: #22c55e;
+  stroke-dasharray: 157;
+  stroke-dashoffset: 157;
+  transition: stroke-dashoffset 3s linear;
+}
 
-  .track {
-    stroke: rgba(255,255,255,.18);
-  }
+.count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
 
-  .progress {
-    stroke: #22c55e;
-    stroke-dasharray: 157;
-    stroke-dashoffset: 157;
-    filter: drop-shadow(0 0 12px rgba(34,197,94,.9));
-    transition: stroke-dashoffset 3s linear;
-  }
+/* SKIP */
+.skip {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.6);
+  border: 1px solid rgba(255,255,255,.3);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
 
-  /* NUMBER */
-  .count {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
-    text-shadow: 0 0 12px rgba(255,255,255,.6);
-    pointer-events: none;
-  }
-
-  /* SKIP */
-  .skip {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,.18);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-    cursor: pointer;
-    box-shadow:
-      0 0 25px rgba(99,102,241,.6),
-      0 0 40px rgba(34,197,94,.4);
-  }
-
-  .skip svg {
-    width: 18px;
-    height: 18px;
-    stroke: white;
-    stroke-width: 2.5;
-  }
+.skip svg {
+  width: 16px;
+  height: 16px;
+  stroke: white;
+  stroke-width: 2.5;
+}
 </style>
 </head>
 
@@ -135,8 +119,10 @@
 
 <div class="fade" id="fade">
 
-  <div class="bg"></div>
-  <div class="overlay"></div>
+  <!-- CLEAR IMAGE -->
+  <div class="image-wrap" id="imageScreen">
+    <img src="https://github.com/sitecraft001-lgtm/dashimage/blob/main/61.png?raw=true" alt="Dashimage 61">
+  </div>
 
   <div class="ui">
     <!-- SKIP -->
@@ -159,42 +145,45 @@
 </div>
 
 <script>
-  const REDIRECT_URL = "https://sitecraft.top";
-  const fade = document.getElementById("fade");
-  const progress = document.querySelector(".progress");
-  const skip = document.getElementById("skipBtn");
-  const countEl = document.getElementById("count");
+const REDIRECT_URL = "zingbook.html";
 
-  let time = 3;
-  let locked = true;
+const fade = document.getElementById("fade");
+const progress = document.querySelector(".progress");
+const skip = document.getElementById("skipBtn");
+const countEl = document.getElementById("count");
+const imageScreen = document.getElementById("imageScreen");
 
-  // Start ring animation
-  requestAnimationFrame(() => {
-    progress.style.strokeDashoffset = "0";
-  });
+let time = 3;
+let locked = true;
 
-  // Countdown
-  const timer = setInterval(() => {
-    time--;
-    countEl.textContent = time;
+/* Start ring */
+requestAnimationFrame(() => {
+  progress.style.strokeDashoffset = "0";
+});
 
-    if (time <= 0) {
-      clearInterval(timer);
-      skip.style.display = "flex";
-      locked = false;
-    }
-  }, 1000);
+/* Countdown */
+const timer = setInterval(() => {
+  time--;
+  countEl.textContent = time;
 
-  function go() {
-    if (locked) return;
-    fade.classList.add("out");
-    setTimeout(() => {
-      window.location.href = REDIRECT_URL;
-    }, 350);
+  if (time <= 0) {
+    clearInterval(timer);
+    skip.style.display = "flex";
+    locked = false;
   }
+}, 1000);
 
-  skip.onclick = go;
-  document.body.onclick = go;
+/* Redirect */
+function go() {
+  if (locked) return;
+  fade.classList.add("out");
+  setTimeout(() => {
+    window.location.href = REDIRECT_URL;
+  }, 350);
+}
+
+skip.onclick = go;
+imageScreen.onclick = go;
 </script>
 
 </body>
