@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Zing AI Chatbot</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Extra style for typing and tool indicators */
+  .typing { font-style: italic; opacity: 0.7; }
+  .tool-log { font-size: 11px; background: #111827; border: 1px solid #1e293b; padding: 4px 8px; border-radius: 4px; margin: 4px 0; color: #94a3b8; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<div class="chatbot">
+  <div class="header">🤖 SiteCraft AI</div>
+  <div class="messages" id="chat"></div>
+  <div class="input-area">
+    <input type="text" id="input" placeholder="Ask me anything...">
+    <button id="sendBtn" onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+// --- CONFIGURATION ---
+const API_KEYS = [
+  "AIzaSyBXK5uZJ_ou6ABphXsxFJ0-a1tw_nUc5dA",
+  "AIzaSyCy2KALbhvmDANaNs-TYop1XylGdEqnmFs",
+  "AIzaSyAwC1NIc5oHkpznwq6M-OJ8G2AIGaN5r_A",
+  "AIzaSyATjhYiEX-XWPdqBh4xWGtz49soiFmChFs"
+];
+
+// As requested, using the specific model name provided
+const MODEL_NAME = "gemini-2.5-flash"; 
+
+// --- PROJECT DATA (Simulating File Access for Local Use) ---
+// This map allows the AI to "read" the website files even on file:// protocol
+const PROJECT_FILES = {
+  "index.html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>SiteCraft.top – Premium Website Themes</title>... (Pricing: Starter 5, Pro 25, Bundle 150. Features: Fast, Modern, Responsive)",
+  "packages.html": "(Store page. Categories: Custom Budget Themes, Full Website, Only Login Pages, Only Signup Pages, Separate Website Pages, Theme Categories)",
+  "support.html": "(Support Page. Includes FAQ, Reviews, and Contact Form. AI Chatbot link: ai/ai.html. Telegram: 8484055647:AAERp8qtvt2CTr3mUP_4mygNr4tQfKFZfSc)",
+  "dashboard.html": "(Tool Dashboard. Links to Resizer, PDF Converter, QR Generator)",
+  "payment.html": "(Payment Page. UPI ID: sitecraft001@oksbi. Instruction: Pay, scan QR, send screenshot to Telegram @SiteCraft_top via Bot 8558920107:AAG5sFMcWp4sV2n111g7xHB_x14Tz9Y17p8)",
+  "login.html": "(Authentication Page with dark/light mode and Telegram activity logging)",
+  "zingbook.html": "(Python Snippets Hub)",
+  "resizer.html": "(Image Resizer tool. Default 1280x720)",
+  "qrgen.html": "(QR Generator tool with neon themes)",
+  "pdfconverter.html": "(Images to PDF Converter tool)",
+  "card1.html": "(Theme Price Ranges Category)",
+  "card2.html": "(Full Web Kits Category)",
+  "card3.html": "(Login Hub Category)",
+  "card4.html": "(Budget Themes Category)",
+  "card5.html": "(Separate Pages Category)",
+  "card6.html": "(Niche Categories Category)",
+  "price1.html": "(Themes in 0-10 INR range)",
+  "price2.html": "(Themes in 10-25 INR range: Trip Vibe, Dark Voyage, Travel Ease)",
+  "price3.html": "(Themes in 25-50 INR range: GameSub Arena, GameSeason Hub)",
+  "price4.html": "(Themes in 50-75 INR range)",
+  "price5.html": "(Themes in 75-150 INR range: Snippet Stack)"
+};
+
+// --- SYSTEM INSTRUCTIONS ---
+const SYSTEM_PROMPT = "\nYou are \"Code Zing AI\", an intelligent assistant created by \"Code Zing\".\nYour official website is SiteCraft.top.\nOfficial Email: codezingofficial@gmail.com\nOfficial WhatsApp: 9933254760\n\nYou have access to TOOLS to interact with the environment:\n1. getFileList: Returns a list of files available in the project.\n2. readFileContent: Reads the actual source code of any file in the project. Use this if you need details about pricing, tools, or specific page features.\n3. runBrowserJS: Runs JavaScript in the user's browser. You can use this to interact with the current chat window (e.g., change styles, log data, or simulate actions).\n\nAlways identify yourself as \"Code Zing AI\" made by \"Code Zing\".\nBe polite, professional, and technical when needed.\n";
+
+// --- STATE ---
+let currentKeyIndex = 0;
+const chat = document.getElementById("chat");
+const history = [];
+
+// --- UI FUNCTIONS ---
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerHTML = text.replace(/\n/g, "<br>");
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addToolLog(log) {
+  const div = document.createElement("div");
+  div.className = "tool-log";
+  div.innerText = "⚙️ Tool: " + log;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const div = document.createElement("div");
+  div.className = "msg bot typing";
+  div.id = "typing-indicator";
+  div.innerText = "Thinking...";
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const typing = document.getElementById("typing-indicator");
+  if (typing) typing.remove();
+}
+
+// --- TOOLS IMPLEMENTATION ---
+const TOOL_DEFINITIONS = [
+  {
+    name: "getFileList",
+    description: "Returns a list of all HTML files in the SiteCraft project.",
+    parameters: { type: "object", properties: {} }
+  },
+  {
+    name: "readFileContent",
+    description: "Reads the content of a specific HTML file from the project.",
+    parameters: {
+      type: "object",
+      properties: {
+        path: { type: "string", description: "The path to the file (e.g., 'index.html')" }
+      },
+      required: ["path"]
+    }
+  },
+  {
+    name: "runBrowserJS",
+    description: "Executes JavaScript in the current browser window context.",
+    parameters: {
+      type: "object",
+      properties: {
+        code: { type: "string", description: "The JS code to execute." }
+      },
+      required: ["code"]
+    }
+  }
+];
+
+const ACTIONS = {
+  getFileList: () => Object.keys(PROJECT_FILES),
+  readFileContent: ({ path }) => {
+    return PROJECT_FILES[path] || "Error: File not found.";
+  },
+  runBrowserJS: ({ code }) => {
+    try {
+      const result = eval(code);
+      return `Executed successfully. Result: ${result}`;
+    } catch (e) {
+      return `Error executing JS: ${e.message}`;
+    }
+  }
+};
+
+// --- API LOGIC ---
+async function callGemini(userPrompt) {
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
+  
+  if (history.length === 0) {
+    history.push({ role: "user", parts: [{ text: `System Instruction: ${SYSTEM_PROMPT}` }] });
+  }
+  history.push({ role: "user", parts: [{ text: userPrompt }] });
+
+  for (let attempt = 0; attempt < API_KEYS.length * 2; attempt++) {
+    const apiKey = API_KEYS[currentKeyIndex];
+    const url = `${endpoint}?key=${apiKey}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: history,
+          tools: [{ function_declarations: TOOL_DEFINITIONS }]
+        })
+      });
+
+      if (response.status === 429) {
+        currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+        continue;
+      }
+
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+      const data = await response.json();
+      const candidate = data.candidates[0].content;
+      history.push(candidate); // Add bot turn to history
+
+      const part = candidate.parts[0];
+
+      // Handle Function Call
+      if (part.functionCall) {
+        const { name, args } = part.functionCall;
+        addToolLog(`${name}(${JSON.stringify(args)})`);
+        
+        const result = ACTIONS[name](args);
+        
+        // Add function response to history
+        history.push({
+          role: "function",
+          parts: [{
+            functionResponse: {
+              name: name,
+              response: { result: result }
+            }
+          }]
+        });
+
+        // Loop back to Gemini with the tool result
+        return callGemini("Proceed with the tool results.");
+      }
+
+      return part.text;
+
+    } catch (error) {
+      console.error(error);
+      currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+      if (attempt > API_KEYS.length) return "❌ I'm having trouble connecting. Please check your API keys or internet.";
+    }
+  }
+}
+
+// --- MAIN HANDLER ---
+async function send() {
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  const sendBtn = document.getElementById("sendBtn");
+
+  if (!text || sendBtn.disabled) return;
+
+  sendBtn.disabled = true;
+  addMessage(text, "user");
+  input.value = "";
+  showTyping();
+
+  const reply = await callGemini(text);
+
+  removeTyping();
+  addMessage(reply || "I didn't get a response.", "bot");
+  sendBtn.disabled = false;
+}
+
+document.getElementById("input").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") send();
+});
+
+// Welcome
+setTimeout(() => {
+  addMessage("Hello! I'm **Code Zing AI** 🤖. I can read the project files and run browser JS to assist you. What can I do for you?", "bot");
+}, 500);
+</script>
+
+</body>
+</html>
