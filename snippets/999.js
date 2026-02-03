@@ -1,4 +1,8 @@
-from turtle import Turtle,Screen
+export default {
+  id: "999",
+  title: "Hanuman",
+  tags: ["999", "python", "turtle Graphics"],
+  code: `from turtle import Turtle,Screen
 import turtle
 k=Turtle()
 k.speed(0)
@@ -630,4 +634,5 @@ k.end_fill()
 k.hideturtle()
 
 
-turtle.done()
+turtle.done()`
+};
