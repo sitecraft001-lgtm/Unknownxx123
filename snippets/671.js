@@ -1,4 +1,8 @@
-from turtle import *
+export default {
+  id: "671",
+  title: "Cool Turtle",
+  tags: ["671", "python", "Turtle Graphics"],
+  code: `from turtle import *
 import colorsys
 
 speed(0)
@@ -18,4 +22,5 @@ for i in range(100):
 
     rt(120)
 
-done()
+done()`
+};
