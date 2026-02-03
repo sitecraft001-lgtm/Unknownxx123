@@ -292,7 +292,7 @@ let filtered = [];
 
 // load all snippet files
 async function loadAll() {
-  const ids = ["777","650","999"]; // just add new ids here
+  const ids = ["777","999","770","671","650","420"]; // just add new ids here
   for (let id of ids) {
     const mod = await import(`./snippets/${id}.js`);
     SNIPPETS.push(mod.default);
