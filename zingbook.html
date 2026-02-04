@@ -37,11 +37,12 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .snippet:hover{transform:translateY(-10px) scale(1.02);filter:brightness(1.05)}
 .snippet-header{padding:18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .btn{padding:8px 16px;border-radius:10px;background:#0f1430;border:1px solid var(--border);color:var(--text);cursor:pointer}
-.code-block{background:#070b1f;padding:18px;font-size:14px;overflow-x:auto;user-select:none}
+.code-block{background:#070b1f;padding:18px;font-size:14px;overflow-x:auto}
 .code-block code{font-family:"JetBrains Mono",monospace}
 .snippet-meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:16px;background:var(--panel-soft)}
 .tag{padding:6px 14px;border-radius:999px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.06)}
 .site-footer{margin-top:64px;padding:24px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--muted)}
+.warning{color:#ffb454;margin-top:12px;font-size:14px}
 </style>
 </head>
 
@@ -54,7 +55,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 
 <main class="codes">
   <h2>Python Snippets</h2>
-  <p class="muted">Search • Copy • Enjoy</p>
+  <p class="muted" id="status">Search • Copy • Enjoy</p>
 
   <div class="search-box">
     <input id="search" type="search" placeholder="Search by ID, title, tags…" />
@@ -70,45 +71,52 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 <footer class="site-footer">© 2026 ZingBook</footer>
 
 <script>
-/* ===============================
-   GLOBAL STORAGE
-================================*/
+/* GLOBAL */
 window.SNIPPETS = {};
 const list = document.getElementById("snippetList");
 const search = document.getElementById("search");
+const statusText = document.getElementById("status");
 
-/* ===============================
-   LOAD SNIPPETS BY ID
-================================*/
+/* IDS */
 const IDS = ["777","999","770","671","650","420"];
 let loadedCount = 0;
+let failed = 0;
+
+/* SAFE LOADER */
+function tryRender(){
+  loadedCount++;
+  if(loadedCount === IDS.length){
+    const data = Object.values(SNIPPETS);
+    render(data);
+
+    if(failed > 0){
+      statusText.textContent = `⚠ ${failed} snippet(s) failed to load`;
+      statusText.className = "warning";
+    }
+  }
+}
 
 IDS.forEach(id => {
   const s = document.createElement("script");
   s.src = `snippets/${id}.js`;
+  s.defer = true;
 
-  s.onload = () => {
-    loadedCount++;
-    if(loadedCount === IDS.length){
-      // ✅ all loaded, render once
-      render(Object.values(SNIPPETS));
-    }
-  };
-
+  s.onload = tryRender;
   s.onerror = () => {
-    console.error("Failed to load snippet:", id);
-    loadedCount++;
+    console.warn("Skipped broken snippet:", id);
+    failed++;
+    tryRender();
   };
 
   document.body.appendChild(s);
 });
 
-/* ===============================
-   RENDER FUNCTION
-================================*/
+/* RENDER */
 function render(data){
   list.innerHTML="";
   data.forEach(s=>{
+    if(!s.id || !s.title || !s.code) return;
+
     const el=document.createElement("article");
     el.className="snippet";
     el.innerHTML=`
@@ -125,28 +133,21 @@ function render(data){
   });
 }
 
-/* ===============================
-   SEARCH FUNCTION
-================================*/
+/* SEARCH */
 search.addEventListener("input",()=>{
   const q = search.value.toLowerCase();
   const all = Object.values(SNIPPETS);
-
   const filtered = all.filter(s =>
     (s.id+s.title+s.code+s.tags.join("")).toLowerCase().includes(q)
   );
-
   render(filtered);
 });
 
-/* ===============================
-   COPY BUTTON
-================================*/
+/* COPY */
 document.addEventListener("click", async e=>{
   const btn = e.target.closest(".copy-btn");
   if(!btn) return;
   const code = document.getElementById(btn.dataset.id);
-  code.style.userSelect = "text"; // enable selection for copy
   await navigator.clipboard.writeText(code.textContent);
   btn.textContent = "Copied ✓";
   setTimeout(()=>btn.textContent="Copy",1200);
