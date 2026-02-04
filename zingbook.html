@@ -24,22 +24,16 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .site-header{position:sticky;top:0;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
 .brand h1{font-size:20px}
 .nav a{color:var(--muted);text-decoration:none;font-size:14px}
-.nav a:hover{color:var(--accent)}
-.codes{max-width:var(--max-width);margin:auto;padding:48px 16px;text-align:center}
+.codes{max-width:var(--max-width);margin:auto;padding:80px 16px;text-align:center}
 .codes h2{font-size:32px}
 .muted{margin-top:8px;color:var(--muted)}
 .search-box{margin-top:32px;display:flex;justify-content:center}
 .search-box input{width:100%;max-width:560px;padding:16px 18px;font-size:15px;background:#0a0e1e;color:var(--text);border:1px solid var(--border);border-radius:16px;outline:none}
-.search-instructions{margin-top:12px;font-size:14px;color:var(--muted)}
-.search-instructions p{background:rgba(255,255,255,.05);padding:8px 14px;border-radius:12px}
-.snippet-list{display:grid;gap:30px;margin-top:48px}
-.snippet{background:linear-gradient(180deg,var(--panel),#0c1020);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:.3s}
-.snippet:hover{transform:translateY(-10px) scale(1.02);filter:brightness(1.05)}
+
+.snippet{margin-top:48px;background:linear-gradient(180deg,var(--panel),#0c1020);border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
 .snippet-header{padding:18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .btn{padding:8px 16px;border-radius:10px;background:#0f1430;border:1px solid var(--border);color:var(--text);cursor:pointer}
-.code-block{background:#070b1f;padding:18px;font-size:14px;overflow-x:auto}
-.code-block code{font-family:"JetBrains Mono",monospace}
-.snippet-meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:16px;background:var(--panel-soft)}
+.code-block{background:#070b1f;padding:18px;font-size:14px;overflow-x:auto;text-align:left}
 .tag{padding:6px 14px;border-radius:999px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.06)}
 .site-footer{margin-top:64px;padding:24px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--muted)}
 .warning{color:#ffb454;margin-top:12px;font-size:14px}
@@ -55,103 +49,68 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 
 <main class="codes">
   <h2>Python Snippets</h2>
-  <p class="muted" id="status">Search • Copy • Enjoy</p>
+  <p class="muted" id="status">Enter snippet ID only</p>
 
   <div class="search-box">
-    <input id="search" type="search" placeholder="Search by ID, title, tags…" />
+    <input id="search" type="search" placeholder="Enter snippet ID e.g. 777" />
   </div>
 
-  <div class="search-instructions">
-    <p>💡 Type snippet ID, title, code, or tags</p>
-  </div>
-
-  <section id="snippetList" class="snippet-list"></section>
+  <section id="snippetBox"></section>
 </main>
 
 <footer class="site-footer">© 2026 ZingBook</footer>
 
 <script>
-/* GLOBAL */
 window.SNIPPETS = {};
-const list = document.getElementById("snippetList");
+const box = document.getElementById("snippetBox");
 const search = document.getElementById("search");
 const statusText = document.getElementById("status");
 
-/* IDS */
 const IDS = ["777","999","770","671","650","420"];
-let loadedCount = 0;
-let failed = 0;
 
-/* SAFE LOADER */
-function tryRender(){
-  loadedCount++;
-  if(loadedCount === IDS.length){
-    const data = Object.values(SNIPPETS);
-    render(data);
-
-    if(failed > 0){
-      statusText.textContent = `⚠ ${failed} snippet(s) failed to load`;
-      statusText.className = "warning";
-    }
-  }
-}
-
-IDS.forEach(id => {
-  const s = document.createElement("script");
-  s.src = `snippets/${id}.js`;
-  s.defer = true;
-
-  s.onload = tryRender;
-  s.onerror = () => {
-    console.warn("Skipped broken snippet:", id);
-    failed++;
-    tryRender();
-  };
-
+/* LOAD FILES */
+IDS.forEach(id=>{
+  const s=document.createElement("script");
+  s.src=`snippets/${id}.js`;
   document.body.appendChild(s);
 });
 
-/* RENDER */
-function render(data){
-  list.innerHTML="";
-  data.forEach(s=>{
-    if(!s.id || !s.title || !s.code) return;
+/* SHOW ONLY BY ID */
+search.addEventListener("input",()=>{
+  const id = search.value.trim();
+  box.innerHTML = "";
 
-    const el=document.createElement("article");
-    el.className="snippet";
-    el.innerHTML=`
+  if(!SNIPPETS[id]){
+    statusText.textContent = "No snippet found";
+    statusText.className = "warning";
+    return;
+  }
+
+  const s = SNIPPETS[id];
+  statusText.textContent = "Snippet loaded";
+  statusText.className = "muted";
+
+  box.innerHTML = `
+    <article class="snippet">
       <header class="snippet-header">
         <h3>${s.title} <small style="opacity:.6">#${s.id}</small></h3>
-        <button class="btn copy-btn" data-id="${s.id}">Copy</button>
+        <button class="btn" onclick="copyCode('${s.id}', this)">Copy</button>
       </header>
       <pre class="code-block"><code id="${s.id}">${s.code}</code></pre>
-      <footer class="snippet-meta">
+      <footer style="padding:14px;display:flex;gap:10px;justify-content:center">
         ${s.tags.map(t=>`<span class="tag">${t}</span>`).join("")}
       </footer>
-    `;
-    list.appendChild(el);
-  });
-}
-
-/* SEARCH */
-search.addEventListener("input",()=>{
-  const q = search.value.toLowerCase();
-  const all = Object.values(SNIPPETS);
-  const filtered = all.filter(s =>
-    (s.id+s.title+s.code+s.tags.join("")).toLowerCase().includes(q)
-  );
-  render(filtered);
+    </article>
+  `;
 });
 
 /* COPY */
-document.addEventListener("click", async e=>{
-  const btn = e.target.closest(".copy-btn");
-  if(!btn) return;
-  const code = document.getElementById(btn.dataset.id);
-  await navigator.clipboard.writeText(code.textContent);
-  btn.textContent = "Copied ✓";
+function copyCode(id,btn){
+  const code=document.getElementById(id);
+  navigator.clipboard.writeText(code.textContent);
+  btn.textContent="Copied ✓";
   setTimeout(()=>btn.textContent="Copy",1200);
-});
+}
 </script>
 
 </body>
