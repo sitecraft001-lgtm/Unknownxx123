@@ -1,8 +1,8 @@
-export default {
+SNIPPETS["420"] = {
   id: "420",
   title: "Cool Square",
-  tags: ["420", "html", "3D Tunnel"],
-  code: `<!DOCTYPE html>
+  code: `
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -112,5 +112,6 @@ export default {
     </div>
   </div>
 </body>
-</html>`
+</html>`,
+  tags: ["python","turtle"]
 };
