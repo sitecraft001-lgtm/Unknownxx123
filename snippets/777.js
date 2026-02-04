@@ -1,13 +1,9 @@
+window.SNIPPETS = window.SNIPPETS || {};
+
 SNIPPETS["777"] = {
   id: "777",
-  title: "Python Turtle Star",
-  code: `
-import turtle
-t = turtle.Turtle()
-for i in range(5):
-    t.forward(100)
-    t.right(144)
-turtle.done()
-`,
-  tags: ["python","turtle"]
+  title: "Factorial",
+  code: `def fact(n):
+    return 1 if n==0 else n*fact(n-1)`,
+  tags: ["math","recursion"]
 };
