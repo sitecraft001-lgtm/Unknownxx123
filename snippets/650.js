@@ -1,6 +1,6 @@
 SNIPPETS["650"] = {
   id: "650",
-  title: "Python Turtle Star",
+  title: "Avengers Logo",
   code: `
 import turtle
 
