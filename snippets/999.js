@@ -1,8 +1,8 @@
-export default {
+SNIPPETS["999"] = {
   id: "999",
-  title: "Hanuman",
-  tags: ["999", "python", "turtle Graphics"],
-  code: `from turtle import Turtle,Screen
+  title: "Hanuman Face
+    ",
+  code: `
 import turtle
 k=Turtle()
 k.speed(0)
@@ -634,5 +634,7 @@ k.end_fill()
 k.hideturtle()
 
 
-turtle.done()`
+turtle.done()
+`,
+  tags: ["Hanuman","python","turtle"]
 };
