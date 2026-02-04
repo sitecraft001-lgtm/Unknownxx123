@@ -1,9 +1,9 @@
+window.SNIPPETS = window.SNIPPETS || {};
+
 SNIPPETS["999"] = {
   id: "999",
-  title: "Hanuman Face
-    ",
-  code: `
-import turtle
+  title: "Hanuman Face",
+  code: `import turtle
 k=Turtle()
 k.speed(0)
 k.color("#FF8C00")
@@ -634,7 +634,6 @@ k.end_fill()
 k.hideturtle()
 
 
-turtle.done()
-`,
-  tags: ["Hanuman","python","turtle"]
+turtle.done()`,
+  tags: ["hanuman","turtlegraphics","python"]
 };
