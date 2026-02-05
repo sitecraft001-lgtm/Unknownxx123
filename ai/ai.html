@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiteCraft Support AI</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Extra style for typing and tool indicators */
+  .typing { font-style: italic; opacity: 0.7; }
+  .tool-log { font-size: 11px; background: #111827; border: 1px solid #1e293b; padding: 4px 8px; border-radius: 4px; margin: 4px 0; color: #94a3b8; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<div class="chatbot">
+  <div class="header">🤖 SiteCraft Support AI</div>
+  <div class="messages" id="chat"></div>
+  <div class="input-area">
+    <input type="text" id="input" placeholder="Ask me anything...">
+    <button id="sendBtn" onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+// --- CONFIGURATION ---
+const API_KEYS = [
+  "AIzaSyB6RmcMqUYmFOTQTSWfNqDNSfJZlrk44IY"
+];
+
+// As requested, using the specific model name provided
+const MODEL_NAME = "gemini-flash-latest";
+
+// --- COMPLETE SITECRAFT WEBSITE DATA ---
+// All website information is provided directly to the AI
+const SITECRAFT_DATA = {
+  "general_info": {
+    "name": "SiteCraft.top",
+    "description": "Premium website themes designed for speed, beauty, and performance",
+    "features": ["Fast Performance", "Modern UI", "Easy Customize", "Responsive"],
+    "pricing": {
+      "starter": "₹5 - Single theme + updates",
+      "pro": "₹25 - Multiple pages + support",
+      "bundle": "₹150 - All themes + lifetime updates"
+    },
+    "contact": {
+      "email": "codezingofficial@gmail.com",
+      "whatsapp": "9933254760",
+      "youtube": "https://youtube.com/@sitecraftstudioyt?si=7Jon_FsC-L8KEQS1"
+    }
+  },
+  "pages": {
+    "index.html": {
+      "title": "SiteCraft.top – Premium Website Themes",
+      "description": "Main landing page with hero section, features, pricing, and how-to-use guide",
+      "sections": [
+        "Hero: Craft Powerful Websites",
+        "Features: Fast Performance, Modern UI, Easy Customize, Responsive",
+        "Pricing: Starter ₹5, Pro ₹25, Bundle ₹150",
+        "How To Use: Browse, Preview, Purchase, Customize, Launch"
+      ]
+    },
+    "packages.html": {
+      "title": "Choose Themes – SiteCraft.top",
+      "description": "Store page with different theme categories",
+      "categories": [
+        "Custom Budget Themes",
+        "Full Website",
+        "Only Login Pages",
+        "Only Signup Pages",
+        "Separate Website Pages",
+        "Theme Categories"
+      ]
+    },
+    "support.html": {
+      "title": "SiteCraft – Support",
+      "description": "Support page with reviews, FAQ, and contact form",
+      "features": [
+        "Customer reviews with 5-star ratings",
+        "FAQ section",
+        "Contact form with Telegram integration",
+        "24/7 AI Assistant link",
+        "Donation support option"
+      ],
+      "telegram_bot_token": "8484055647:AAERp8qtvt2CTr3mUP_4mygNr4tQfKFZfSc",
+      "telegram_chat_id": "6340167379"
+    },
+    "dashboard.html": {
+      "title": "SiteCraft Tools",
+      "description": "Dashboard with various tools",
+      "tools": [
+        {
+          "name": "Yt Resizer",
+          "description": "Resize images to popular or custom sizes. Supports drag & drop.",
+          "image": "https://github.com/sitecraft001-lgtm/dashimage/blob/main/1.png?raw=true"
+        },
+        {
+          "name": "Images To Pdf Converter",
+          "description": "Convert images into pdf by SiteCraft",
+          "image": "https://github.com/sitecraft001-lgtm/dashimage/blob/main/3.png?raw=true"
+        },
+        {
+          "name": "Qr Code Generator",
+          "description": "Bundle website themes into downloadable ZIP files",
+          "image": "https://github.com/sitecraft001-lgtm/dashimage/blob/main/2.png?raw=true"
+        }
+      ]
+    },
+    "payment.html": {
+      "title": "Payment-SiteCraft.top",
+      "description": "Payment page with UPI integration and Telegram screenshot submission",
+      "payment_methods": ["UPI: sitecraft001@oksbi"],
+      "process": [
+        "Click Pay Now to view QR code",
+        "Scan QR using Google Pay/PhonePe/Paytm/BHIM",
+        "Enter amount and confirm payment",
+        "Send screenshot via Telegram for confirmation",
+        "ZIP file delivered after verification"
+      ],
+      "telegram_bot_token": "8558920107:AAG5sFMcWp4sV2n111g7xHB_x14Tz9Y17p8",
+      "telegram_channel": "@SiteCraft_top"
+    },
+    "login.html": {
+      "title": "SiteCraft.top – Login / Sign Up",
+      "description": "Authentication page with dark/light mode and Telegram activity logging",
+      "features": [
+        "Login, Register, Forgot Password tabs",
+        "Dark/Light mode toggle",
+        "Password visibility toggle",
+        "Gmail validation",
+        "Admin account with special privileges",
+        "Telegram notifications for signup/login/forgot password events"
+      ],
+      "telegram_bots": {
+        "signup": {"token": "8448157151:AAHhuamtrUVBsDPb2fSnqh5kEDXG99UFAfo", "chat_id": "6340167379"},
+        "login": {"token": "8075539797:AAFbBkKEJqOfXA2a9XgDX_4sIaq0WVt3ciU", "chat_id": "6340167379"},
+        "forgot": {"token": "8318249547:AAG5ydICUt5otXZfd0_Te4kHsalfk2GbaEc", "chat_id": "6340167379"}
+      }
+    },
+    "zingbook.html": {
+      "title": "ZingBook -- Python Snippets",
+      "description": "Python snippets hub with search functionality",
+      "features": [
+        "Searchable Python code snippets",
+        "Copy to clipboard functionality",
+        "Tag-based organization",
+        "Code highlighting"
+      ]
+    },
+    "resizer.html": {
+      "title": "SiteCraft Image Resizer",
+      "description": "Image resizing tool with preset and custom dimensions",
+      "features": [
+        "Drag & drop image upload",
+        "Preset size: 1280×720 (default)",
+        "Custom width/height inputs",
+        "Download with auto-generated filenames",
+        "Persistent download counter using localStorage"
+      ]
+    },
+    "qrgen.html": {
+      "title": "Premium Dark QR Generator",
+      "description": "QR code generator with multiple themes and logo support",
+      "features": [
+        "Multiple neon color themes",
+        "Logo overlay support",
+        "Download functionality",
+        "Animated gradient border"
+      ]
+    },
+    "pdfconverter.html": {
+      "title": "Image to PDF | SiteCraft Tools",
+      "description": "Convert multiple images to a single PDF file",
+      "features": [
+        "Drag & drop image upload",
+        "Multiple image support",
+        "Client-side processing (no server upload)",
+        "Auto-generated filenames with counter"
+      ]
+    }
+  },
+  "themes": {
+    "card1.html": {
+      "title": "Theme Price Ranges",
+      "categories": [
+        {"range": "₹0 – ₹10", "description": ""},
+        {"range": "₹10 – ₹25", "description": ""},
+        {"range": "₹25 – ₹50", "description": "The most trending, most shared, and most bought website themes loved by creators and brands worldwide"},
+        {"range": "₹50 – ₹75", "description": ""},
+        {"range": "₹75 – ₹150", "description": ""}
+      ]
+    },
+    "card2.html": {
+      "title": "Full Web Kits",
+      "themes": [
+        {
+          "name": "Snippet Stack",
+          "price": "₹25",
+          "description": "A curated hub for ready-to-use coding snippets and top programming books",
+          "preview": "https://sites.google.com/view/sitecraft16/home",
+          "buy_link": "https://example.com/portfolio-buy"
+        },
+        {
+          "name": "GameSeason Hub",
+          "price": "₹45",
+          "description": "A cool gaming website theme with seasonal schedules and tournaments",
+          "preview": "https://sites.google.com/view/sitecraft18/home",
+          "buy_link": "https://example.com/business-buy"
+        },
+        {
+          "name": "Snippet Stack",
+          "price": "₹99",
+          "description": "A curated hub for ready-to-use coding snippets and top programming books",
+          "preview": "https://sites.google.com/view/sitecraft16/home",
+          "buy_link": "https://example.com/shop-buy"
+        },
+        {
+          "name": "Creative Blog",
+          "price": "₹12",
+          "description": "Stylish blogging theme with smooth transitions and responsive design",
+          "preview": "https://example.com/blog-preview",
+          "buy_link": "https://example.com/blog-buy"
+        },
+        {
+          "name": "Startup Landing",
+          "price": "₹15",
+          "description": "Perfect landing page for startups, fast, modern and mobile-friendly",
+          "preview": "https://example.com/startup-preview",
+          "buy_link": "https://example.com/startup-buy"
+        }
+      ]
+    },
+    "card3.html": {
+      "title": "Login Hub",
+      "themes": [
+        {
+          "name": "Portfolio Pro",
+          "price": "₹10",
+          "description": "Modern portfolio theme with smooth animations and responsive layout",
+          "preview": "https://sites.google.com/view/sitecraft11/home",
+          "buy_link": "https://example.com/portfolio-buy"
+        },
+        {
+          "name": "Business Boost",
+          "price": "FREE",
+          "description": "Professional business website theme with clean UI and fast performance",
+          "preview": "https://example.com/business-preview",
+          "buy_link": "https://example.com/business-buy"
+        },
+        {
+          "name": "Shop Smart",
+          "price": "₹5",
+          "description": "Dark mode e-commerce theme with glowing UI and product layout",
+          "preview": "https://example.com/shop-preview",
+          "buy_link": "https://example.com/shop-buy"
+        },
+        {
+          "name": "Creative Blog",
+          "price": "₹12",
+          "description": "Stylish blogging theme with smooth transitions and responsive design",
+          "preview": "https://example.com/blog-preview",
+          "buy_link": "https://example.com/blog-buy"
+        },
+        {
+          "name": "Startup Landing",
+          "price": "₹15",
+          "description": "Perfect landing page for startups, fast, modern and mobile-friendly",
+          "preview": "https://example.com/startup-preview",
+          "buy_link": "https://example.com/startup-buy"
+        }
+      ]
+    },
+    "card4.html": {
+      "title": "₹0 - ₹15",
+      "themes": [
+        {
+          "name": "Portfolio Pro",
+          "price": "₹7",
+          "description": "Modern portfolio theme with smooth animations and responsive layout",
+          "preview": "https://sites.google.com/view/sitecraft23/home",
+          "buy_link": "payment.html?order=card4(1)"
+        },
+        {
+          "name": "Business Boost",
+          "price": "₹5",
+          "description": "Professional business website theme with clean UI and fast performance",
+          "preview": "https://sites.google.com/view/sitecraft22/home",
+          "buy_link": "payment.html?order=card4(2)"
+        },
+        {
+          "name": "Shop Smart",
+          "price": "₹5",
+          "description": "Dark mode e-commerce theme with glowing UI and product layout",
+          "preview": "https://sites.google.com/view/sitecraft3/home",
+          "buy_link": "https://sites.google.com/view/sitecraft6/home"
+        },
+        {
+          "name": "Creative Blog",
+          "price": "₹12",
+          "description": "Stylish blogging theme with smooth transitions and responsive design",
+          "preview": "https://sites.google.com/view/sitecraft7/home",
+          "buy_link": "https://sites.google.com/view/sitecraft8/home"
+        },
+        {
+          "name": "Startup Landing",
+          "price": "₹15",
+          "description": "Perfect landing page for startups, fast, modern and mobile-friendly",
+          "preview": "https://sites.google.com/view/sitecraft9/home",
+          "buy_link": "https://sites.google.com/view/sitecraft10/home"
+        }
+      ]
+    },
+    "card5.html": {
+      "title": "Separate Web Pages",
+      "themes": [
+        {
+          "name": "Login Page",
+          "price": "₹7",
+          "description": "A sleek login page featuring a neon splash effect that glows when toggled ON",
+          "preview": "https://sites.google.com/view/sitecraft25/home",
+          "buy_link": "payment.html?order=(card5)1"
+        },
+        {
+          "name": "Cart Flow",
+          "price": "₹5",
+          "description": "A fast, smooth cart interface for effortless item management",
+          "preview": "https://sites.google.com/view/sitecraft26/home",
+          "buy_link": "payment.html?order=(card5)2"
+        },
+        {
+          "name": "Contact Page",
+          "price": "₹3",
+          "description": "A premium and professional contact page with a polished, business-ready feel",
+          "preview": "https://example.com/shop-preview",
+          "buy_link": "payment.html?order=(card5)3"
+        },
+        {
+          "name": "Pay Select",
+          "price": "₹3",
+          "description": "A simple payment page where users choose a price and pay instantly through UPI",
+          "preview": "https://sites.google.com/view/sitecraft27/home",
+          "buy_link": "payment.html?order=(card5)4"
+        },
+        {
+          "name": "Login UI",
+          "price": "₹5",
+          "description": "A trending, smooth, and professional login-signup interface",
+          "preview": "https://sites.google.com/view/sitecraft28/home",
+          "buy_link": "payment.html?order=(card5)5"
+        }
+      ]
+    },
+    "price1.html": {
+      "title": "₹0 - ₹10",
+      "themes": [
+        {
+          "name": "Login Page",
+          "price": "₹2",
+          "description": "Modern login page theme with smooth animations and responsive layout",
+          "preview": "https://sites.google.com/view/sitecraft11/home",
+          "buy_link": "payment.html?order=(0-10)1"
+        },
+        {
+          "name": "Shop Smart",
+          "price": "₹5",
+          "description": "Dark mode e-commerce theme with glowing UI and product layout",
+          "preview": "https://sites.google.com/view/sitecraft2/home",
+          "buy_link": "payment.html?order=(0-10)2"
+        },
+        {
+          "name": "Tech Nova",
+          "price": "₹5",
+          "description": "A sleek tech website theme for blogs & innovation Includes support",
+          "preview": "https://sites.google.com/view/sitecraft3/home",
+          "buy_link": "payment.html?order=(0-10)3"
+        },
+        {
+          "name": "Dine Reserve",
+          "price": "₹3",
+          "description": "A clean restaurant theme to reserve tables easily Includes menu showcase too",
+          "preview": "https://sites.google.com/view/sitecraft7/home",
+          "buy_link": "payment.html?order=(0-10)4"
+        },
+        {
+          "name": "Store Sphere",
+          "price": "₹5",
+          "description": "A modern online store theme for easy checkout Cart option included, fast and ready to sell",
+          "preview": "https://sites.google.com/view/sitecraft9/home",
+          "buy_link": "payment.html?order=(0-10)5"
+        }
+      ]
+    },
+    "price2.html": {
+      "title": "₹10 - ₹25",
+      "themes": [
+        {
+          "name": "Trip Vibe",
+          "price": "₹25",
+          "description": "A stylish tours & travel theme with cool layouts Gallery included to showcase destinations beautifully",
+          "preview": "https://sites.google.com/view/sitecraft1/home",
+          "buy_link": "payment.html?order=(10-25)1"
+        },
+        {
+          "name": "Travel Ease",
+          "price": "₹11",
+          "description": "A value-packed tours & travels website theme with essential features",
+          "preview": "https://sites.google.com/view/sitecraft13/home",
+          "buy_link": "payment.html?order=(10-25)2"
+        },
+        {
+          "name": "Dark Voyage",
+          "price": "₹25",
+          "description": "A sleek dark-themed website with modern layouts Includes a separate contact page and destination showcase",
+          "preview": "https://sites.google.com/view/sitecraft12/home",
+          "buy_link": "payment.html?order=(10-25)3"
+        },
+        {
+          "name": "ShopCart Prime",
+          "price": "₹20",
+          "description": "A modern shopping website theme with a powerful cart system, fast updates & clean checkout",
+          "preview": "https://sites.google.com/view/sitecraft14/home",
+          "buy_link": "payment.html?order=(10-25)4"
+        },
+        {
+          "name": "The Future UI",
+          "price": "₹25",
+          "description": "A sleek AI-powered website theme built for next-gen innovation and digital creators",
+          "preview": "https://sites.google.com/view/sitecraft15/home",
+          "buy_link": "payment.html?order=(10-25)5"
+        }
+      ]
+    },
+    "price3.html": {
+      "title": "₹25 - ₹50",
+      "themes": [
+        {
+          "name": "GameSub Arena",
+          "price": "₹25",
+          "description": "A cool gaming theme with a quick Subscribe feature to grow gaming communities",
+          "preview": "https://sites.google.com/view/sitecraft17/home",
+          "buy_link": "payment.html?order=(25-50)1"
+        },
+        {
+          "name": "GameSeason Hub",
+          "price": "₹50",
+          "description": "A cool gaming website theme with seasonal schedules and tournaments",
+          "preview": "https://sites.google.com/view/sitecraft18/home",
+          "buy_link": "payment.html?order=(25-50)2"
+        },
+        {
+          "name": "Shop Smart",
+          "price": "₹35",
+          "description": "Dark mode e-commerce theme with glowing UI and product layout",
+          "preview": "https://sites.google.com/view/sitecraft24/home",
+          "buy_link": "payment.html?order=(25-50)3"
+        },
+        {
+          "name": "Creative Blog",
+          "price": "₹30",
+          "description": "Stylish blogging theme with smooth transitions and responsive design",
+          "preview": "https://sites.google.com/view/sitecraft19/home",
+          "buy_link": "payment.html?order=(25-50)4"
+        },
+        {
+          "name": "Startup Landing",
+          "price": "₹15",
+          "description": "Perfect landing page for startups, fast, modern and mobile-friendly",
+          "preview": "https://example.com/startup-preview",
+          "buy_link": "payment.html?order=(25-50)5"
+        }
+      ]
+    },
+    "price4.html": {
+      "title": "₹50 - ₹75",
+      "themes": [
+        {
+          "name": "Portfolio Pro",
+          "price": "₹10",
+          "description": "Modern portfolio theme with smooth animations and responsive layout",
+          "preview": "https://example.com/portfolio-preview",
+          "buy_link": "payment.html?order=(50-75)1"
+        },
+        {
+          "name": "Business Boost",
+          "price": "FREE",
+          "description": "Professional business website theme with clean UI and fast performance",
+          "preview": "https://example.com/business-preview",
+          "buy_link": "payment.html?order=(50-75)2"
+        }
+      ]
+    },
+    "price5.html": {
+      "title": "₹75 - ₹150",
+      "themes": [
+        {
+          "name": "Snippet Stack",
+          "price": "₹99",
+          "description": "A curated hub for ready-to-use coding snippets and top programming books",
+          "preview": "https://sites.google.com/view/sitecraft16/home",
+          "buy_link": "payment.html?order=(75-150)1"
+        }
+      ]
+    }
+  },
+  "additional_features": {
+    "notification_system": {
+      "page": "notification.html",
+      "description": "Notification system with badge indicator"
+    },
+    "tools": [
+      "Image Resizer (resizer.html)",
+      "PDF Converter (pdfconverter.html)",
+      "QR Code Generator (qrgen.html)"
+    ]
+  }
+};
+
+// --- SYSTEM INSTRUCTIONS ---
+const SYSTEM_PROMPT = "\nYou are \"SiteCraft Support AI\", an intelligent assistant made by \"Code Zing\" for SiteCraft.\nYour official website is SiteCraft.top.\nOfficial Email: codezingofficial@gmail.com\nOfficial WhatsApp: 9933254760\n\nYou have access to comprehensive information about the SiteCraft website, including:\n- General information about SiteCraft services and features\n- Detailed information about all web pages (index, packages, support, dashboard, payment, login, etc.)\n- Complete list of website themes with names, prices, descriptions, preview links, and purchase options\n- Information about tools like image resizer, PDF converter, and QR generator\n- Payment methods and processes\n- Contact information and support options\n\nAlways identify yourself as \"SiteCraft Support AI\" made by \"Code Zing\".\nBe polite, professional, and technical when needed.\nProvide accurate information about SiteCraft products, pricing, and services based on the data provided.\n";
+
+// --- STATE ---
+let currentKeyIndex = 0;
+const chat = document.getElementById("chat");
+const history = [];
+
+// --- MARKDOWN RENDERING FUNCTION ---
+function renderMarkdown(text) {
+  // Convert headers
+  text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+  // Convert bold and italic
+  text = text.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+  text = text.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+
+  // Convert links
+  text = text.replace(/\[(.+?)\]\((.+?)\)/gim, '<a href="$2" target="_blank">$1</a>');
+
+  // Convert unordered lists
+  text = text.replace(/^\- (.*$)/gim, '<li>$1</li>');
+
+  // Wrap consecutive list items in ul tags
+  text = text.replace(/(<li>.*<\/li>\n?)+/gim, '<ul>$&</ul>');
+
+  // Convert line breaks
+  text = text.replace(/\n/g, '<br>');
+
+  return text;
+}
+
+// --- UI FUNCTIONS ---
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerHTML = renderMarkdown(text);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addToolLog(log) {
+  const div = document.createElement("div");
+  div.className = "tool-log";
+  div.innerText = "⚙️ Tool: " + log;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const div = document.createElement("div");
+  div.className = "msg bot typing";
+  div.id = "typing-indicator";
+  div.innerText = "Thinking...";
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const typing = document.getElementById("typing-indicator");
+  if (typing) typing.remove();
+}
+
+// --- TOOLS IMPLEMENTATION ---
+const TOOL_DEFINITIONS = [
+  {
+    name: "runBrowserJS",
+    description: "Executes JavaScript in the current browser window context.",
+    parameters: {
+      type: "object",
+      properties: {
+        code: { type: "string", description: "The JS code to execute." }
+      },
+      required: ["code"]
+    }
+  }
+];
+
+const ACTIONS = {
+  runBrowserJS: ({ code }) => {
+    try {
+      const result = eval(code);
+      return `Executed successfully. Result: ${result}`;
+    } catch (e) {
+      return `Error executing JS: ${e.message}`;
+    }
+  }
+};
+
+// --- API LOGIC ---
+async function callGemini(userPrompt) {
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
+  
+  if (userPrompt) {
+    history.push({ role: "user", parts: [{ text: userPrompt }] });
+  }
+
+  for (let attempt = 0; attempt < API_KEYS.length * 2; attempt++) {
+    const apiKey = API_KEYS[currentKeyIndex];
+    const url = `${endpoint}?key=${apiKey}`;
+    console.log(`Calling API: ${endpoint}`);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: history,
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          tools: [{ function_declarations: TOOL_DEFINITIONS }]
+        })
+      });
+
+      if (response.status === 403 || response.status === 404 || response.status === 429) {
+        const errorBody = await response.json().catch(() => ({}));
+        console.warn(`Encountered ${response.status} error:`, errorBody);
+        currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+        continue;
+      }
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        console.error("API Error Response:", errorBody);
+        throw new Error(`API Error: ${response.status} - ${errorBody.error?.message || "Unknown error"}`);
+      }
+
+      const data = await response.json();
+      const candidate = data.candidates[0].content;
+      history.push(candidate); // Add bot turn to history
+
+      const part = candidate.parts[0];
+
+      // Handle Function Call
+      if (part.functionCall) {
+        const { name, args } = part.functionCall;
+        addToolLog(`${name}(${JSON.stringify(args)})`);
+
+        const result = ACTIONS[name](args);
+
+        // Add function response to history
+        history.push({
+          role: "function",
+          parts: [{
+            functionResponse: {
+              name: name,
+              response: { result: result }
+            }
+          }]
+        });
+
+        // Loop back to Gemini with the tool result
+        return callGemini(null);
+      }
+
+      return part.text;
+
+    } catch (error) {
+      console.error(error);
+      currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+      if (attempt > API_KEYS.length) return "❌ I'm having trouble connecting. Please check your API keys or internet.";
+    }
+  }
+}
+
+// --- MAIN HANDLER ---
+async function send() {
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  const sendBtn = document.getElementById("sendBtn");
+
+  if (!text || sendBtn.disabled) return;
+
+  sendBtn.disabled = true;
+  addMessage(text, "user");
+  input.value = "";
+  showTyping();
+
+  const reply = await callGemini(text);
+
+  removeTyping();
+  addMessage(reply || "I didn't get a response.", "bot");
+  sendBtn.disabled = false;
+}
+
+document.getElementById("input").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") send();
+});
+
+// Welcome
+setTimeout(() => {
+  addMessage("Hello! I'm **SiteCraft Support AI** (made by Code Zing) 🤖. I have comprehensive information about all SiteCraft products, themes, pricing, and services.What can I do for you?", "bot");
+}, 500);
+</script>
+
+</body>
+</html>
