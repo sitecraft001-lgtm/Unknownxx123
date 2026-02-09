@@ -1,7 +1,7 @@
 window.SNIPPETS = window.SNIPPETS || {};
 
-SNIPPETS["777"] = {
-  id: "777",
+SNIPPETS["01"] = {
+  id: "01",
   title: "24/7 Ai Style.css",
   code: `* { box-sizing: border-box; font-family: Arial, sans-serif; }
 
