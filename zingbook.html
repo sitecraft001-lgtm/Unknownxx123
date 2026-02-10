@@ -3,40 +3,194 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ZingBook -- Python Snippets</title>
+<title>ZingBook — Python Snippets</title>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg: radial-gradient(1000px 600px at top, #111836, #05070d);
-  --panel: rgba(20, 26, 48, 0.92);
-  --panel-soft: rgba(255,255,255,0.04);
-  --text: #e8ecf6;
-  --muted: #9aa3b2;
-  --border: rgba(255,255,255,0.08);
-  --accent: #6cf2c2;
-  --shadow: 0 25px 60px rgba(0,0,0,0.6);
-  --radius: 18px;
-  --max-width: 1200px;
+  --bg1:#070b1f;
+  --bg2:#0b1028;
+  --glass: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.12);
+  --text:#e9edff;
+  --muted:#9aa4c7;
+  --accent:#6cf2c2;
+  --accent2:#7aa2ff;
+  --radius:18px;
+  --shadow:0 30px 80px rgba(0,0,0,.7);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
-.site-header{position:sticky;top:0;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
-.brand h1{font-size:20px}
-.nav a{color:var(--muted);text-decoration:none;font-size:14px}
-.codes{max-width:var(--max-width);margin:auto;padding:80px 16px;text-align:center}
-.codes h2{font-size:32px}
-.muted{margin-top:8px;color:var(--muted)}
-.search-box{margin-top:32px;display:flex;justify-content:center}
-.search-box input{width:100%;max-width:560px;padding:16px 18px;font-size:15px;background:#0a0e1e;color:var(--text);border:1px solid var(--border);border-radius:16px;outline:none}
+*{margin:0;padding:0;box-sizing:border-box}
 
-.snippet{margin-top:48px;background:linear-gradient(180deg,var(--panel),#0c1020);border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
-.snippet-header{padding:18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.btn{padding:8px 16px;border-radius:10px;background:#0f1430;border:1px solid var(--border);color:var(--text);cursor:pointer}
-.code-block{background:#070b1f;padding:18px;font-size:14px;overflow-x:auto;text-align:left}
-.tag{padding:6px 14px;border-radius:999px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.06)}
-.site-footer{margin-top:64px;padding:24px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--muted)}
-.warning{color:#ffb454;margin-top:12px;font-size:14px}
+body{
+  font-family:Inter,system-ui;
+  min-height:100vh;
+  background:
+    radial-gradient(800px 500px at top,#1a235a,transparent),
+    linear-gradient(160deg,var(--bg2),var(--bg1));
+  color:var(--text);
+}
+
+/* HEADER */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 28px;
+  backdrop-filter:blur(18px);
+  background:rgba(10,14,40,.6);
+  border-bottom:1px solid var(--border);
+}
+
+.brand h1{
+  font-size:22px;
+  letter-spacing:.5px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.nav a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+.nav a:hover{color:white}
+
+/* MAIN */
+.codes{
+  max-width:1200px;
+  margin:auto;
+  padding:90px 18px;
+  text-align:center;
+}
+
+.codes h2{
+  font-size:40px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.muted{margin-top:10px;color:var(--muted)}
+
+.search-box{
+  margin-top:40px;
+  display:flex;
+  justify-content:center;
+}
+
+.search-box input{
+  width:100%;
+  max-width:520px;
+  padding:18px 20px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:white;
+  font-size:16px;
+  outline:none;
+  transition:.3s;
+}
+.search-box input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 25px rgba(108,242,194,.3);
+}
+
+/* SNIPPET CARD */
+.snippet{
+  margin-top:60px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  animation:pop .5s ease;
+}
+
+@keyframes pop{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.snippet-header{
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,.3);
+  border-bottom:1px solid var(--border);
+}
+
+.snippet-header h3{
+  font-size:18px;
+  font-weight:600;
+}
+
+/* BUTTON */
+.btn{
+  padding:10px 18px;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border:none;
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(108,242,194,.4);
+}
+
+/* CODE */
+.code-block{
+  background:#050814;
+  padding:22px;
+  font-family:"JetBrains Mono",monospace;
+  font-size:14px;
+  overflow-x:auto;
+  text-align:left;
+  line-height:1.6;
+  color:#cde2ff;
+}
+
+/* TAGS */
+.tags{
+  padding:14px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.tag{
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:12px;
+  color:var(--accent);
+  background:rgba(108,242,194,.1);
+  border:1px solid rgba(108,242,194,.3);
+}
+
+/* FOOTER */
+.site-footer{
+  margin-top:80px;
+  padding:24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+}
+
+.warning{
+  color:#ffb454;
+  margin-top:12px;
+  font-size:14px;
+}
 </style>
 </head>
 
@@ -58,7 +212,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
   <section id="snippetBox"></section>
 </main>
 
-<footer class="site-footer">© 2026 ZingBook</footer>
+<footer class="site-footer">© 2026 ZingBook — Built for Developers</footer>
 
 <script>
 window.SNIPPETS = {};
@@ -68,14 +222,12 @@ const statusText = document.getElementById("status");
 
 const IDS = ["777","999","770","671","650","420","01"];
 
-/* LOAD FILES */
 IDS.forEach(id=>{
   const s=document.createElement("script");
   s.src=`snippets/${id}.js`;
   document.body.appendChild(s);
 });
 
-/* SHOW ONLY BY ID */
 search.addEventListener("input",()=>{
   const id = search.value.trim();
   box.innerHTML = "";
@@ -87,7 +239,7 @@ search.addEventListener("input",()=>{
   }
 
   const s = SNIPPETS[id];
-  statusText.textContent = "Snippet loaded";
+  statusText.textContent = "Snippet loaded ✓";
   statusText.className = "muted";
 
   box.innerHTML = `
@@ -97,17 +249,15 @@ search.addEventListener("input",()=>{
         <button class="btn" onclick="copyCode('${s.id}', this)">Copy</button>
       </header>
       <pre class="code-block"><code id="${s.id}"></code></pre>
-      <footer style="padding:14px;display:flex;gap:10px;justify-content:center">
+      <div class="tags">
         ${s.tags.map(t=>`<span class="tag">${t}</span>`).join("")}
-      </footer>
+      </div>
     </article>
   `;
 
-  // SAFE DISPLAY (no HTML execution)
   document.getElementById(s.id).textContent = s.code;
 });
 
-/* COPY */
 function copyCode(id,btn){
   const code=document.getElementById(id);
   navigator.clipboard.writeText(code.textContent);
