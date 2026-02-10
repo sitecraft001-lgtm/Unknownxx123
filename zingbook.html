@@ -54,19 +54,6 @@ body{
   color:transparent;
 }
 
-/* NO SELECT UI */
-.brand, .nav, .codes h2, .muted, .tags, .site-footer, .snippet-header{
-  user-select:none;
-  -webkit-user-select:none;
-}
-
-.nav a{
-  color:var(--muted);
-  text-decoration:none;
-  font-size:14px;
-}
-.nav a:hover{color:white}
-
 /* MAIN */
 .codes{
   max-width:1200px;
@@ -99,11 +86,6 @@ body{
   color:white;
   font-size:16px;
   outline:none;
-  transition:.3s;
-}
-.search-box input:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 25px rgba(108,242,194,.3);
 }
 
 /* SNIPPET CARD */
@@ -161,14 +143,9 @@ body{
   color:#000;
   font-weight:600;
   cursor:pointer;
-  transition:.3s;
-}
-.btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 30px rgba(108,242,194,.4);
 }
 
-/* CODE (SELECTABLE) */
+/* CODE */
 .code-block{
   background:#050814;
   padding:22px;
@@ -178,7 +155,6 @@ body{
   text-align:left;
   line-height:1.6;
   color:#cde2ff;
-  user-select:text;
 }
 
 /* TAGS */
@@ -213,6 +189,21 @@ body{
   color:#ffb454;
   margin-top:12px;
   font-size:14px;
+}
+
+/* 🔒 ULTRA PROTECTION */
+.snippet,
+.snippet *:not(.code-block):not(code){
+  user-select:none !important;
+  -webkit-user-select:none !important;
+  -webkit-touch-callout:none !important;
+  pointer-events:auto;
+}
+
+.code-block, 
+.code-block *{
+  user-select:none !important;
+  -webkit-user-select:none !important;
 }
 </style>
 </head>
@@ -282,7 +273,7 @@ search.addEventListener("input",()=>{
   document.getElementById(s.id).textContent = s.code;
 });
 
-// COPY
+// COPY BUTTON ONLY
 function copyCode(id,btn){
   const code=document.getElementById(id);
   navigator.clipboard.writeText(code.textContent);
@@ -290,14 +281,20 @@ function copyCode(id,btn){
   setTimeout(()=>btn.textContent="Copy",1200);
 }
 
-// BLOCK RIGHT CLICK & DRAG ON CARDS
+// BLOCK RIGHT CLICK
 document.addEventListener("contextmenu", e=>{
   if(e.target.closest(".snippet")) e.preventDefault();
 });
 
+// BLOCK DRAG
 document.addEventListener("dragstart", e=>{
   if(e.target.closest(".snippet")) e.preventDefault();
 });
+
+// BLOCK MOBILE LONG PRESS
+document.addEventListener("touchstart", e=>{
+  if(e.target.closest(".snippet")) e.preventDefault();
+},{passive:false});
 </script>
 
 </body>
