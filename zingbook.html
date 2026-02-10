@@ -11,7 +11,6 @@
 :root {
   --bg1:#070b1f;
   --bg2:#0b1028;
-  --glass: rgba(255,255,255,0.06);
   --border: rgba(255,255,255,0.12);
   --text:#e9edff;
   --muted:#9aa4c7;
@@ -48,11 +47,12 @@ body{
 
 .brand h1{
   font-size:22px;
-  letter-spacing:.5px;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   -webkit-background-clip:text;
   color:transparent;
 }
+
+.nav a{color:var(--muted);text-decoration:none}
 
 /* MAIN */
 .codes{
@@ -62,33 +62,18 @@ body{
   text-align:center;
 }
 
-.codes h2{
-  font-size:40px;
-  font-weight:700;
-  letter-spacing:1px;
-}
-
-.muted{margin-top:10px;color:var(--muted)}
-
-.search-box{
-  margin-top:40px;
-  display:flex;
-  justify-content:center;
-}
-
+.search-box{margin-top:40px}
 .search-box input{
   width:100%;
   max-width:520px;
-  padding:18px 20px;
+  padding:18px;
   border-radius:16px;
   border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.05);
   color:white;
-  font-size:16px;
-  outline:none;
 }
 
-/* SNIPPET CARD */
+/* CARD */
 .snippet{
   position:relative;
   margin-top:60px;
@@ -97,7 +82,6 @@ body{
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   overflow:hidden;
-  animation:pop .5s ease;
 }
 
 /* WATERMARK */
@@ -105,8 +89,7 @@ body{
   content:"ZingBook ©";
   position:absolute;
   inset:0;
-  font-size:52px;
-  font-weight:700;
+  font-size:50px;
   color:rgba(255,255,255,.04);
   display:flex;
   align-items:center;
@@ -115,23 +98,12 @@ body{
   transform:rotate(-15deg);
 }
 
-@keyframes pop{
-  from{opacity:0;transform:scale(.95)}
-  to{opacity:1;transform:scale(1)}
-}
-
 .snippet-header{
   padding:20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   background:rgba(0,0,0,.3);
-  border-bottom:1px solid var(--border);
-}
-
-.snippet-header h3{
-  font-size:18px;
-  font-weight:600;
 }
 
 /* BUTTON */
@@ -140,7 +112,6 @@ body{
   border-radius:12px;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   border:none;
-  color:#000;
   font-weight:600;
   cursor:pointer;
 }
@@ -151,21 +122,12 @@ body{
   padding:22px;
   font-family:"JetBrains Mono",monospace;
   font-size:14px;
-  overflow-x:auto;
-  text-align:left;
-  line-height:1.6;
   color:#cde2ff;
+  overflow-x:auto;
 }
 
 /* TAGS */
-.tags{
-  padding:14px;
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
+.tags{padding:14px;display:flex;gap:10px;justify-content:center}
 .tag{
   padding:6px 14px;
   border-radius:999px;
@@ -180,30 +142,39 @@ body{
   margin-top:80px;
   padding:24px;
   text-align:center;
-  font-size:13px;
   color:var(--muted);
-  border-top:1px solid var(--border);
 }
 
-.warning{
-  color:#ffb454;
-  margin-top:12px;
-  font-size:14px;
+/* 🔒 PROTECTION (NO BUGS) */
+
+/* Block selection for UI only */
+.snippet-header,
+.tags,
+.tag,
+.site-footer,
+.brand,
+.nav,
+.muted {
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
 }
 
-/* 🔒 ULTRA PROTECTION */
-.snippet,
-.snippet *:not(.code-block):not(code){
-  user-select:none !important;
-  -webkit-user-select:none !important;
-  -webkit-touch-callout:none !important;
+/* Block long-press on UI, but NOT on button */
+.snippet *{
+  -webkit-touch-callout:none;
+}
+
+/* Allow copy button */
+.btn{
   pointer-events:auto;
 }
 
-.code-block, 
+/* Do NOT allow selecting code manually */
+.code-block,
 .code-block *{
-  user-select:none !important;
-  -webkit-user-select:none !important;
+  user-select:none;
+  -webkit-user-select:none;
 }
 </style>
 </head>
@@ -226,7 +197,7 @@ body{
   <section id="snippetBox"></section>
 </main>
 
-<footer class="site-footer">© 2026 ZingBook — Built for Developers</footer>
+<footer class="site-footer">© 2026 ZingBook</footer>
 
 <script>
 window.SNIPPETS = {};
@@ -242,25 +213,22 @@ IDS.forEach(id=>{
   document.body.appendChild(s);
 });
 
-// SEARCH
 search.addEventListener("input",()=>{
   const id = search.value.trim();
   box.innerHTML = "";
 
   if(!SNIPPETS[id]){
     statusText.textContent = "No snippet found";
-    statusText.className = "warning";
     return;
   }
 
   const s = SNIPPETS[id];
   statusText.textContent = "Snippet loaded ✓";
-  statusText.className = "muted";
 
   box.innerHTML = `
     <article class="snippet">
       <header class="snippet-header">
-        <h3>${s.title} <small style="opacity:.6">#${s.id}</small></h3>
+        <h3>${s.title} <small>#${s.id}</small></h3>
         <button class="btn" onclick="copyCode('${s.id}', this)">Copy</button>
       </header>
       <pre class="code-block"><code id="${s.id}"></code></pre>
@@ -273,7 +241,6 @@ search.addEventListener("input",()=>{
   document.getElementById(s.id).textContent = s.code;
 });
 
-// COPY BUTTON ONLY
 function copyCode(id,btn){
   const code=document.getElementById(id);
   navigator.clipboard.writeText(code.textContent);
@@ -281,20 +248,15 @@ function copyCode(id,btn){
   setTimeout(()=>btn.textContent="Copy",1200);
 }
 
-// BLOCK RIGHT CLICK
+/* BLOCK RIGHT CLICK */
 document.addEventListener("contextmenu", e=>{
   if(e.target.closest(".snippet")) e.preventDefault();
 });
 
-// BLOCK DRAG
+/* BLOCK DRAG */
 document.addEventListener("dragstart", e=>{
   if(e.target.closest(".snippet")) e.preventDefault();
 });
-
-// BLOCK MOBILE LONG PRESS
-document.addEventListener("touchstart", e=>{
-  if(e.target.closest(".snippet")) e.preventDefault();
-},{passive:false});
 </script>
 
 </body>
