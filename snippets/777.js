@@ -1,9 +1,7 @@
-window.SNIPPETS = window.SNIPPETS || {};
-
-SNIPPETS["777"] = {
+window.SNIPPETS["777"] = {
   id: "777",
-  title: "Factorial",
-  code: `def fact(n):
-    return 1 if n==0 else n*fact(n-1)`,
-  tags: ["math","recursion"]
+  title: "Hello World",
+  code: `print("Hello World")`,
+  tags: ["python", "beginner"],
+  video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" // Optional
 };
