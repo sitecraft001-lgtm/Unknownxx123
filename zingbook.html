@@ -239,24 +239,23 @@ body::before{
   <p class="muted" id="status">Enter snippet ID only</p>
 
   <div class="search-box">
-    <input id="search" type="search" placeholder="Enter snippet ID e.g. 777" />
+    <input id="search" type="search" placeholder="Enter Snippet ID (e.g 777)" />
   </div>
 
   <!-- INSTRUCTIONS -->
   <div class="instructions">
-    <h4>How to use ZingBook</h4>
+    <center><h4>How to Use ZingBook</h4>
     <ul>
-      <li>Enter only the snippet ID (example: 777).</li>
-      <li>Click the floating YouTube button to watch tutorial.</li>
-      <li>Use the Copy button to copy protected code.</li>
-      <li>Right-click & manual selection are disabled.</li>
+      <p>1. Open YouTube and Search for Code Zing</p><br>
+      <p>2. Get Snippet ID from video from Video Description Or Pinned comment</p><br>
+      <p>3. Paste it in the Search box and Copy your code. Enjoy! 🎉</p>
+      </center>
     </ul>
   </div>
 
   <section id="snippetBox"></section>
 </main>
-
-<footer class="site-footer">© 2026 ZingBook</footer>
+<b><footer class="site-footer">© 2026 ZingBook - All Rights Reserved</footer></br>
 
 <script>
 window.SNIPPETS = {};
@@ -278,11 +277,14 @@ search.addEventListener("input",()=>{
 
   if(!SNIPPETS[id]){
     statusText.textContent = "No snippet found";
+    statusText.style.color = "red";
     return;
+    
   }
 
   const s = SNIPPETS[id];
   statusText.textContent = "Snippet loaded ✓";
+  statusText.style.color = "green";
 
   const wrapper = document.createElement("div");
   wrapper.className = "snippet-wrapper";
