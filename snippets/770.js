@@ -28,5 +28,6 @@ for i in range(160):
 
 done()
 `,
-  tags: ["python","turtle"]
+  tags: ["python","turtle"],
+  video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" // Optional
 };
