@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Creator Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui;}
+body{margin:0;background:linear-gradient(135deg,#0f1115,#1a1d23);color:white;}
+.header{padding:18px;text-align:center;font-size:28px;font-weight:700;position:sticky;top:0;background:#1a1d23;z-index:10;display:flex;justify-content:center;align-items:center;gap:20px;}
+.navbar{display:flex;justify-content:center;background:#1a1d23;padding:10px 0;border-bottom:1px solid #2b2f38;position:sticky;top:70px;z-index:9;}
+.navbar div{margin:0 16px;padding:8px 16px;border-radius:20px;cursor:pointer;color:#aaa;}
+.navbar div.active{background:linear-gradient(135deg,#6c4cff,#8b7bff);color:white;}
+.search{margin:16px;}
+.search input{width:100%;padding:14px;border-radius:14px;border:none;background:#1a1d23;color:white;}
+.projects{padding:0 16px 100px;}
+.card{position:relative;background:rgba(255,255,255,.05);border-radius:16px;padding:16px;margin-bottom:14px;cursor:pointer;transition:0.3s;}
+.card:hover{background:rgba(255,255,255,.1);}
+.card-title{font-size:18px;font-weight:600;}
+.card-code{color:#aaa;font-size:12px;margin-top:6px;}
+.menu-btn{position:absolute;top:10px;right:10px;color:#aaa;cursor:pointer;font-size:24px;}
+.menu{position:absolute;top:36px;right:10px;background:#1a1d23;border-radius:12px;display:none;box-shadow:0 5px 15px rgba(0,0,0,.5);width:140px;}
+.menu div{padding:12px 16px;cursor:pointer;border-bottom:1px solid #2b2f38;}
+.menu div:last-child{border-bottom:none;}
+.menu div:hover{background:#2b2f38;}
+.fab{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#6c4cff,#8b7bff);color:white;font-size:32px;border:none;cursor:pointer;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;}
+.modal-box{background:#1a1d23;padding:24px;border-radius:20px;width:85%;}
+.modal input{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none;background:#0f1115;color:white;}
+.modal-actions{display:flex;justify-content:space-between;margin-top:20px;}
+.btn{background:none;border:none;color:#8b7bff;font-size:16px;cursor:pointer;}
+/* Top-right global menu */
+.top-menu-btn{position:absolute;top:18px;right:18px;color:#aaa;font-size:28px;cursor:pointer;}
+.top-menu{position:absolute;top:58px;right:18px;background:#1a1d23;border-radius:12px;display:none;box-shadow:0 5px 15px rgba(0,0,0,.5);}
+.top-menu div{padding:12px 20px;cursor:pointer;border-bottom:1px solid #2b2f38;}
+.top-menu div:last-child{border-bottom:none;}
+.top-menu div:hover{background:#2b2f38;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  HTML Creator Pro
+  <div class="top-menu-btn" onclick="toggleTopMenu(event)">⋮</div>
+  <div class="top-menu" id="topMenu">
+    <div onclick="redirectPage('settings.html')">Settings</div>
+    <div onclick="redirectPage('about.html')">About</div>
+    <div onclick="redirectPage('profile.html')">Profile</div>
+  </div>
+</div>
+
+<div class="navbar">
+  <div class="tab active" onclick="switchTab('projects')">Projects</div>
+  <div class="tab" onclick="redirectPage('tutorial.html')">Tutorial</div>
+  <div class="tab" onclick="redirectPage('news.html')">News</div>
+</div>
+
+<div class="search">
+  <input id="searchInput" placeholder="Search project...">
+</div>
+
+<div class="projects" id="projectList"></div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2>New Project</h2>
+    <input id="projectName" placeholder="Enter title">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Back</button>
+      <button class="btn" onclick="createProject()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let projects = JSON.parse(localStorage.getItem("projects")) || [];
+const projectList = document.getElementById("projectList");
+const searchInput = document.getElementById("searchInput");
+
+function projectCard(p,i){
+return `
+<div class="card" onclick="openProject(${i})">
+  <div class="menu-btn" onclick="event.stopPropagation();toggleMenu(${i})">⋮</div>
+  <div class="menu" id="menu${i}">
+    <div onclick="renameProject(${i})">Rename</div>
+    <div onclick="deleteProject(${i})">Delete</div>
+  </div>
+  <div class="card-title">${p.title}</div>
+  <div class="card-code">HTML / CSS / JS</div>
+</div>`;
+}
+
+function renderProjects(){
+  let filter = searchInput.value.toLowerCase();
+  projectList.innerHTML="";
+  projects.forEach((p,i)=>{
+    if(p.title.toLowerCase().includes(filter)) projectList.innerHTML+=projectCard(p,i);
+  });
+  localStorage.setItem("projects",JSON.stringify(projects));
+}
+
+function openProject(i){
+  localStorage.setItem("currentProject", i);
+  window.location.href = "editor.html";
+}
+
+function toggleMenu(i){
+  document.querySelectorAll(".menu").forEach(m=>m.style.display="none");
+  document.getElementById("menu"+i).style.display="block";
+}
+
+window.onclick=()=>{ 
+  document.querySelectorAll(".menu").forEach(m=>m.style.display="none");
+  document.getElementById("topMenu").style.display="none";
+}
+
+function renameProject(i){
+  let n = prompt("New name:",projects[i].title);
+  if(n){projects[i].title=n; renderProjects();}
+}
+
+function deleteProject(i){
+  if(confirm("Delete project?")){
+    projects.splice(i,1);
+    renderProjects();
+  }
+}
+
+function openModal(){
+  modal.style.display="flex";
+  projectName.value="";
+}
+
+function closeModal(){
+  modal.style.display="none";
+}
+
+function createProject(){
+  let n = projectName.value.trim();
+  if(!n) return;
+  projects.unshift({
+    title:n,
+    html:`<h1>${n}</h1>`,
+    css:"",
+    js:""
+  });
+  closeModal();
+  renderProjects();
+}
+
+searchInput.addEventListener("input",renderProjects);
+renderProjects();
+
+function switchTab(tab){
+  document.querySelectorAll(".navbar .tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".navbar .tab").forEach(t=>{
+    if(t.innerText.toLowerCase()===tab) t.classList.add("active");
+  });
+  if(tab==='projects'){
+    document.getElementById("projectList").style.display='block';
+    searchInput.style.display='block';
+  }
+}
+
+// Top-right menu
+function toggleTopMenu(e){
+  e.stopPropagation();
+  const menu = document.getElementById("topMenu");
+  menu.style.display = (menu.style.display==='block') ? 'none' : 'block';
+}
+
+function redirectPage(url){
+  window.location.href = url;
+}
+</script>
+</body>
+</html>
